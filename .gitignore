@@ -1,0 +1,36 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+# Env / secrets
+.env
+.env.local
+kaggle.json
+
+# Data (raw/interim/processed are pulled or generated, not committed)
+data/raw/*
+data/interim/*
+data/processed/*
+!data/raw/.gitkeep
+!data/interim/.gitkeep
+!data/processed/.gitkeep
+
+# Trained model artifacts (large binaries, not committed)
+models/*.pkl
+models/*.pt
+models/*.joblib
+!models/.gitkeep
+
+# Next.js
+app/.next/
+app/node_modules/
+app/.env*.local
+
+# Ad-hoc debugging screenshots (image.png, image2.png, ... pasted into chat while debugging)
+notebooks/image*.png
+
+# OS
+.DS_Store

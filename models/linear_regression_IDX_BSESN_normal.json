@@ -1,0 +1,15 @@
+{
+  "asset": "^BSESN",
+  "model_type": "linear_regression",
+  "window": "normal",
+  "train_end": "2016-12-31",
+  "test_start": "2017-01-01",
+  "test_end": "2017-12-31",
+  "metrics": {
+    "mae_pct": 1.129,
+    "rmse_pct": 1.383,
+    "directional_accuracy_pct": 49.2,
+    "n_predictions": 260
+  },
+  "date_trained": "2026-08-11T13:53:36.484621"
+}

@@ -1,0 +1,15 @@
+{
+  "asset": "^BSESN",
+  "model_type": "arima",
+  "window": "normal",
+  "train_end": "2016-12-31",
+  "test_start": "2017-01-01",
+  "test_end": "2017-12-31",
+  "metrics": {
+    "mae_pct": 1.054,
+    "rmse_pct": 1.303,
+    "directional_accuracy_pct": 66.9,
+    "n_predictions": 260
+  },
+  "date_trained": "2026-08-11T13:53:36.500797"
+}

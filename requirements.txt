@@ -1,0 +1,17 @@
+# Phase 1: data ingestion & cleaning
+pandas
+numpy
+pyarrow
+yfinance
+kaggle
+python-dotenv
+jupyter
+matplotlib
+
+# Phase 3: baseline ML models
+scikit-learn
+statsmodels
+scipy
+
+# Added in later phases (tree-based / sequence models, uncomment when we get there):
+# torch
