@@ -1,0 +1,21 @@
+{
+  "asset": "ULTRACEMCO.NS",
+  "model_type": "random_forest",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 5.745,
+    "rmse_pct": 7.356,
+    "directional_accuracy_pct": 64.7,
+    "dir_acc_ci_low": 51.0,
+    "dir_acc_ci_high": 76.4,
+    "p_value_vs_random": 0.0357,
+    "significant_vs_random": true,
+    "significant_better_than_random": true,
+    "significant_worse_than_random": false,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:43:59.695828"
+}

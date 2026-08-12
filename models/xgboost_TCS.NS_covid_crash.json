@@ -1,0 +1,21 @@
+{
+  "asset": "TCS.NS",
+  "model_type": "xgboost",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 5.318,
+    "rmse_pct": 7.03,
+    "directional_accuracy_pct": 58.8,
+    "dir_acc_ci_low": 45.2,
+    "dir_acc_ci_high": 71.2,
+    "p_value_vs_random": 0.2076,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:43:40.844410"
+}

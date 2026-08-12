@@ -1,0 +1,21 @@
+{
+  "asset": "^NSEI",
+  "model_type": "random_forest",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 6.874,
+    "rmse_pct": 8.4,
+    "directional_accuracy_pct": 21.6,
+    "dir_acc_ci_low": 12.5,
+    "dir_acc_ci_high": 34.6,
+    "p_value_vs_random": 0.0,
+    "significant_vs_random": true,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": true,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:44:49.519072"
+}

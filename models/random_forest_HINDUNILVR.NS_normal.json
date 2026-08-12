@@ -1,0 +1,21 @@
+{
+  "asset": "HINDUNILVR.NS",
+  "model_type": "random_forest",
+  "window": "normal",
+  "train_end": "2016-12-31",
+  "test_start": "2017-01-01",
+  "test_end": "2017-12-31",
+  "metrics": {
+    "mae_pct": 1.803,
+    "rmse_pct": 2.349,
+    "directional_accuracy_pct": 54.6,
+    "dir_acc_ci_low": 48.5,
+    "dir_acc_ci_high": 60.6,
+    "p_value_vs_random": 0.1366,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 260
+  },
+  "date_trained": "2026-08-12T11:39:32.199798"
+}

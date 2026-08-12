@@ -1,0 +1,21 @@
+{
+  "asset": "LT.NS",
+  "model_type": "random_forest",
+  "window": "2008_financial_crisis",
+  "train_end": "2007-12-31",
+  "test_start": "2008-01-01",
+  "test_end": "2009-03-31",
+  "metrics": {
+    "mae_pct": 6.898,
+    "rmse_pct": 8.575,
+    "directional_accuracy_pct": 42.0,
+    "dir_acc_ci_low": 36.8,
+    "dir_acc_ci_high": 47.4,
+    "p_value_vs_random": 0.004,
+    "significant_vs_random": true,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": true,
+    "n_predictions": 326
+  },
+  "date_trained": "2026-08-12T11:41:20.564973"
+}

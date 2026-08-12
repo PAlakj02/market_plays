@@ -1,0 +1,21 @@
+{
+  "asset": "DRREDDY.NS",
+  "model_type": "random_forest",
+  "window": "2008_financial_crisis",
+  "train_end": "2007-12-31",
+  "test_start": "2008-01-01",
+  "test_end": "2009-03-31",
+  "metrics": {
+    "mae_pct": 4.539,
+    "rmse_pct": 5.86,
+    "directional_accuracy_pct": 44.2,
+    "dir_acc_ci_low": 38.9,
+    "dir_acc_ci_high": 49.6,
+    "p_value_vs_random": 0.0353,
+    "significant_vs_random": true,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": true,
+    "n_predictions": 326
+  },
+  "date_trained": "2026-08-12T11:38:51.927719"
+}

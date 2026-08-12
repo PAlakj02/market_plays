@@ -1,0 +1,21 @@
+{
+  "asset": "ONGC.NS",
+  "model_type": "xgboost",
+  "window": "2008_financial_crisis",
+  "train_end": "2007-12-31",
+  "test_start": "2008-01-01",
+  "test_end": "2009-03-31",
+  "metrics": {
+    "mae_pct": 5.573,
+    "rmse_pct": 7.293,
+    "directional_accuracy_pct": 55.8,
+    "dir_acc_ci_low": 50.4,
+    "dir_acc_ci_high": 61.1,
+    "p_value_vs_random": 0.0353,
+    "significant_vs_random": true,
+    "significant_better_than_random": true,
+    "significant_worse_than_random": false,
+    "n_predictions": 326
+  },
+  "date_trained": "2026-08-12T11:42:19.263351"
+}

@@ -59,6 +59,46 @@ def train_eval_arima(feature_table, cfg, order=ARIMA_ORDER, horizon=HORIZON):
     return predicted, actual, converged
 
 
+def safe_asset_name(ticker):
+    """Filesystem-safe asset name for saved model filenames (e.g. '^NSEI' -> 'IDX_NSEI')."""
+    return ticker.replace('^', 'IDX_')
+
+
+def train_eval_tree_model(feature_table, cfg, model_factory, refit_every=20):
+    """Walk-forward evaluation for a tree-based regressor (Random Forest, XGBoost, ...).
+
+    Refits every `refit_every` trading days on an expanding window, rather than daily like
+    the linear regression baseline -- refitting a tree ensemble at every single test day is
+    far more expensive than linear regression's closed-form OLS fit, so this trades a little
+    recency for tractable runtime. No-lookahead still holds: every prediction only ever uses
+    a model trained on data strictly before it, just not necessarily refreshed as of yesterday.
+
+    Returns (predicted, actual, last_model, last_importances) -- `last_model` is the fit
+    trained on the most data in the window (the final refit), used as the saved artifact;
+    `last_importances` is a Series of feature_importances_ from that same fit, or None if
+    the model doesn't expose one.
+    """
+    test_dates = feature_table.loc[cfg['test_start']:cfg['test_end']].index
+    preds = {}
+    model = None
+    last_importances = None
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore')
+        for i, date in enumerate(test_dates):
+            if model is None or i % refit_every == 0:
+                train_slice = feature_table[feature_table.index < date]
+                model = model_factory()
+                model.fit(train_slice[FEATURE_COLS], train_slice[TARGET_COL])
+                if hasattr(model, 'feature_importances_'):
+                    last_importances = pd.Series(model.feature_importances_, index=FEATURE_COLS)
+            preds[date] = model.predict(feature_table.loc[[date], FEATURE_COLS])[0]
+
+    predicted = pd.Series(preds)
+    actual = feature_table.loc[predicted.index, TARGET_COL]
+    return predicted, actual, model, last_importances
+
+
 def directional_accuracy_ci(n_correct, n_total, confidence=0.95):
     """Wilson score interval for a directional-accuracy proportion, plus a two-sided z-test against 50% (random chance).
 

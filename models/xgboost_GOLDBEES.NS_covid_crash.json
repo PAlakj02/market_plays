@@ -1,0 +1,21 @@
+{
+  "asset": "GOLDBEES.NS",
+  "model_type": "xgboost",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 17.504,
+    "rmse_pct": 36.571,
+    "directional_accuracy_pct": 51.0,
+    "dir_acc_ci_low": 37.7,
+    "dir_acc_ci_high": 64.1,
+    "p_value_vs_random": 0.8886,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:39:06.269510"
+}

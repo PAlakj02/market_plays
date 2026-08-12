@@ -1,0 +1,5 @@
+ticker,original_dir_acc_pct,original_significant_better,less_regularized_dir_acc_pct,less_regularized_significant_better
+RELIANCE.NS,50.0,False,50.0,False
+TCS.NS,49.2,False,51.5,False
+HDFCBANK.NS,62.3,True,58.5,True
+^BSESN,45.8,False,51.5,False

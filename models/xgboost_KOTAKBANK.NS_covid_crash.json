@@ -1,0 +1,21 @@
+{
+  "asset": "KOTAKBANK.NS",
+  "model_type": "xgboost",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 9.681,
+    "rmse_pct": 11.901,
+    "directional_accuracy_pct": 37.3,
+    "dir_acc_ci_low": 25.3,
+    "dir_acc_ci_high": 51.0,
+    "p_value_vs_random": 0.0687,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:41:06.082387"
+}

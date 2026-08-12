@@ -1,0 +1,21 @@
+{
+  "asset": "ONGC.NS",
+  "model_type": "xgboost",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 10.444,
+    "rmse_pct": 12.745,
+    "directional_accuracy_pct": 45.1,
+    "dir_acc_ci_low": 32.3,
+    "dir_acc_ci_high": 58.6,
+    "p_value_vs_random": 0.4838,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:42:21.112331"
+}

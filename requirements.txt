@@ -13,5 +13,8 @@ scikit-learn
 statsmodels
 scipy
 
-# Added in later phases (tree-based / sequence models, uncomment when we get there):
+# Phase 3b: nonlinear models
+xgboost
+
+# Added in later phases (sequence models, uncomment when we get there):
 # torch

@@ -1,0 +1,21 @@
+{
+  "asset": "SUNPHARMA.NS",
+  "model_type": "random_forest",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 6.949,
+    "rmse_pct": 9.731,
+    "directional_accuracy_pct": 35.3,
+    "dir_acc_ci_low": 23.6,
+    "dir_acc_ci_high": 49.0,
+    "p_value_vs_random": 0.0357,
+    "significant_vs_random": true,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": true,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:43:00.787806"
+}

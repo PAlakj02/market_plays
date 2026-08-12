@@ -1,0 +1,21 @@
+{
+  "asset": "HDFCBANK.NS",
+  "model_type": "random_forest",
+  "window": "normal",
+  "train_end": "2016-12-31",
+  "test_start": "2017-01-01",
+  "test_end": "2017-12-31",
+  "metrics": {
+    "mae_pct": 1.529,
+    "rmse_pct": 2.11,
+    "directional_accuracy_pct": 66.9,
+    "dir_acc_ci_low": 61.0,
+    "dir_acc_ci_high": 72.4,
+    "p_value_vs_random": 0.0,
+    "significant_vs_random": true,
+    "significant_better_than_random": true,
+    "significant_worse_than_random": false,
+    "n_predictions": 260
+  },
+  "date_trained": "2026-08-12T11:39:12.133325"
+}

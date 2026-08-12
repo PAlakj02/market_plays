@@ -1,0 +1,21 @@
+{
+  "asset": "HINDUNILVR.NS",
+  "model_type": "xgboost",
+  "window": "2008_financial_crisis",
+  "train_end": "2007-12-31",
+  "test_start": "2008-01-01",
+  "test_end": "2009-03-31",
+  "metrics": {
+    "mae_pct": 3.864,
+    "rmse_pct": 5.212,
+    "directional_accuracy_pct": 58.3,
+    "dir_acc_ci_low": 52.9,
+    "dir_acc_ci_high": 63.5,
+    "p_value_vs_random": 0.0028,
+    "significant_vs_random": true,
+    "significant_better_than_random": true,
+    "significant_worse_than_random": false,
+    "n_predictions": 326
+  },
+  "date_trained": "2026-08-12T11:39:44.734149"
+}

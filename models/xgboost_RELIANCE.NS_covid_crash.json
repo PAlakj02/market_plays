@@ -1,0 +1,21 @@
+{
+  "asset": "RELIANCE.NS",
+  "model_type": "xgboost",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 10.738,
+    "rmse_pct": 12.341,
+    "directional_accuracy_pct": 29.4,
+    "dir_acc_ci_low": 18.7,
+    "dir_acc_ci_high": 43.0,
+    "p_value_vs_random": 0.0033,
+    "significant_vs_random": true,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": true,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:42:41.120823"
+}

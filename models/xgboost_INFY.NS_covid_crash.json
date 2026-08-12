@@ -1,0 +1,21 @@
+{
+  "asset": "INFY.NS",
+  "model_type": "xgboost",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "metrics": {
+    "mae_pct": 6.673,
+    "rmse_pct": 8.729,
+    "directional_accuracy_pct": 70.6,
+    "dir_acc_ci_low": 57.0,
+    "dir_acc_ci_high": 81.3,
+    "p_value_vs_random": 0.0033,
+    "significant_vs_random": true,
+    "significant_better_than_random": true,
+    "significant_worse_than_random": false,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-08-12T11:40:26.207516"
+}
