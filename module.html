@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Module · MarketMinds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .mod-hero{ position:relative; padding:6px 0 20px; }
+  .mod-hero::before{ content:''; position:absolute; inset:-24px -24px auto -24px; height:230px; z-index:-1; pointer-events:none; }
+  .theme-rally .mod-hero::before{ background:radial-gradient(620px circle at 12% 0%, rgba(23,217,122,0.16), transparent 62%); }
+  .theme-crash .mod-hero::before{ background:radial-gradient(620px circle at 12% 0%, rgba(255,75,92,0.14), transparent 62%); }
+  .mod-eyebrow{ display:inline-flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:12px; padding:6px 13px; border-radius:20px; margin-bottom:16px; }
+  .theme-rally .mod-eyebrow{ background:rgba(23,217,122,0.12); color:var(--green); border:1px solid rgba(23,217,122,0.35); }
+  .theme-crash .mod-eyebrow{ background:rgba(255,75,92,0.10); color:var(--red); border:1px solid rgba(255,75,92,0.3); }
+  .mod-hero h2{ font-size:36px; margin-bottom:10px; text-wrap:balance; }
+  .mod-hero .lede{ font-size:15.5px; max-width:680px; }
+
+  .panel-accent{ border-left:3px solid var(--gold-dim); }
+  .bullet-list{ margin:0; padding:0; list-style:none; display:flex; flex-direction:column; gap:12px; }
+  .bullet-list li{ display:flex; gap:10px; font-size:14px; color:var(--text-secondary); line-height:1.65; }
+  .bullet-list li::before{ content:'●'; color:var(--gold); font-size:8px; margin-top:7px; flex-shrink:0; }
+
+  .worth-box{ background:var(--bg-raised); border:1px solid var(--card-border); border-radius:12px; padding:18px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; gap:6px; }
+  .worth-box .lbl{ font-size:11px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; }
+  .worth-box .val{ font-family:'IBM Plex Mono',monospace; font-size:24px; font-weight:600; }
+  .worth-box .pulse-dot{ width:6px; height:6px; border-radius:50%; background:var(--green); display:inline-block; animation:blinkDot 1.6s ease-in-out infinite; margin-right:5px; }
+  @keyframes blinkDot{ 0%,100%{opacity:1;} 50%{opacity:0.25;} }
+
+  .present-bars{ display:flex; flex-direction:column; gap:10px; }
+  .present-bar-row .top{ display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:12.5px; margin-bottom:5px; }
+  .present-bar-track{ height:8px; background:var(--card-border); border-radius:4px; overflow:hidden; }
+  .present-bar-fill{ height:100%; background:linear-gradient(90deg, var(--gold-dim), var(--gold)); border-radius:4px; }
+
+  .sim-launch{ text-align:center; padding:32px 20px; }
+  .sim-lead{ font-size:16px; color:var(--text-secondary); margin-bottom:18px; }
+  .sim-lead strong{ color:var(--text-primary); }
+  .sim-run-btn{ position:relative; }
+  .theme-rally .sim-run-btn{ box-shadow:0 0 0 0 rgba(23,217,122,0.4); animation:pulseGreen 2.2s ease-out infinite; }
+  .theme-crash .sim-run-btn{ box-shadow:0 0 0 0 rgba(255,75,92,0.35); animation:pulseRed 2.2s ease-out infinite; }
+  @keyframes pulseGreen{ 0%{box-shadow:0 0 0 0 rgba(23,217,122,0.35);} 70%{box-shadow:0 0 0 14px rgba(23,217,122,0);} 100%{box-shadow:0 0 0 0 rgba(23,217,122,0);} }
+  @keyframes pulseRed{ 0%{box-shadow:0 0 0 0 rgba(255,75,92,0.3);} 70%{box-shadow:0 0 0 14px rgba(255,75,92,0);} 100%{box-shadow:0 0 0 0 rgba(255,75,92,0);} }
+
+  .sim-loading{ text-align:center; padding:36px 20px; }
+  .sim-bar{ height:6px; border-radius:3px; background:var(--card-border); overflow:hidden; max-width:360px; margin:0 auto 14px; }
+  .sim-bar-fill{ height:100%; width:0%; border-radius:3px; transition:width 1.15s cubic-bezier(.22,.9,.34,1); }
+  .theme-rally .sim-bar-fill{ background:linear-gradient(90deg, var(--green), var(--gold)); }
+  .theme-crash .sim-bar-fill{ background:linear-gradient(90deg, var(--red), var(--gold)); }
+  .sim-status{ font-size:12.5px; color:var(--text-muted); }
+
+  .reveal{ opacity:0; transform:translateY(10px); transition:opacity .5s ease, transform .5s ease; }
+  .reveal.show{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){
+    .sim-bar-fill{ transition:none; }
+    .reveal{ transition:none; }
+    .sim-run-btn{ animation:none; }
+  }
+
+  .verdict-strip{ display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .verdict-strip .big{ font-family:'IBM Plex Mono',monospace; font-size:26px; }
+
+  .search-row{ display:flex; gap:10px; margin-bottom:14px; }
+  .search-row input{ flex:1; background:var(--card); border:1px solid var(--card-border); border-radius:8px; padding:10px 14px; color:var(--text-primary); font-family:'Inter',sans-serif; font-size:14px; }
+  .search-row input:focus{ outline:1px solid var(--green-dim); }
+  .asset-row{ display:grid; grid-template-columns: 1fr 100px 70px; align-items:center; gap:10px; padding:11px 12px; border-bottom:1px solid var(--card-border); }
+  .asset-row:last-child{ border-bottom:none; }
+  .asset-row .name{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
+  .asset-row .name .sub{ display:block; font-size:10.5px; color:var(--text-muted); margin-top:2px; }
+  .asset-row .price{ font-family:'IBM Plex Mono',monospace; font-size:13px; text-align:right; }
+  .asset-row.no-data{ opacity:0.4; }
+  .practice-holding-row{ display:grid; grid-template-columns: 1fr 70px 70px; gap:10px; padding:8px 12px; border-bottom:1px solid var(--card-border); font-family:'IBM Plex Mono',monospace; font-size:12px; align-items:center; }
+
+  .feedback-block{ border-radius:10px; padding:14px 16px; margin-bottom:12px; font-size:13px; line-height:1.65; }
+  .feedback-block .ttl{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:7px; display:block; }
+  .feedback-block.mistake{ background:rgba(255,75,92,0.08); border:1px solid rgba(255,75,92,0.25); }
+  .feedback-block.mistake .ttl{ color:var(--red); }
+  .feedback-block.recommend{ background:rgba(240,183,66,0.08); border:1px solid rgba(240,183,66,0.28); }
+  .feedback-block.recommend .ttl{ color:var(--gold); }
+  .feedback-block.good{ background:rgba(23,217,122,0.08); border:1px solid rgba(23,217,122,0.25); }
+  .feedback-block.good .ttl{ color:var(--green); }
+  .feedback-block p{ color:var(--text-secondary); }
+  .feedback-block strong{ color:var(--text-primary); }
+
+  .updated-result{ margin-top:12px; padding:14px 16px; border-radius:10px; background:var(--card); border:1px solid var(--card-border); font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
+  .updated-result .row-line{ display:flex; justify-content:space-between; padding:4px 0; }
+
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:100; }
+  .modal-backdrop.show{ display:flex; }
+  .modal{ background:var(--card); border:1px solid var(--card-border); border-radius:14px; padding:26px; width:360px; max-width:90vw; }
+  .modal h3{ font-size:16px; margin-bottom:4px; }
+  .modal .sub{ font-size:12px; color:var(--text-muted); margin-bottom:14px; }
+  .modal label{ font-size:12px; color:var(--text-secondary); display:block; margin-bottom:6px; }
+  .modal input{ width:100%; background:var(--bg-raised); border:1px solid var(--card-border); border-radius:8px; padding:10px 12px; color:var(--text-primary); font-family:'IBM Plex Mono',monospace; font-size:14px; margin-bottom:14px; }
+  .modal .summary{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--text-secondary); margin-bottom:16px; }
+  .modal .note-line{ font-size:11.5px; color:var(--text-muted); margin-bottom:14px; line-height:1.6; }
+  .modal .err{ color:var(--red); font-size:12px; margin-bottom:10px; min-height:16px; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-actions button{ flex:1; }
+
+  .causes-panel{ border-left:3px solid var(--gold); background:linear-gradient(180deg, rgba(240,183,66,0.05), transparent 40%); }
+  .causes-panel h3{ color:var(--gold); }
+  .causes-sentence{ font-size:13.5px; color:var(--text-secondary); line-height:1.8; max-width:760px; opacity:0; transform:translateY(8px); transition:opacity .6s ease, transform .6s ease; margin-bottom:8px; }
+  .causes-sentence.show{ opacity:1; transform:translateY(0); }
+  .indicator-list{ margin:16px 0 0; padding:0; list-style:none; display:flex; flex-direction:column; gap:10px; max-width:760px; }
+  .indicator-list li{ display:flex; gap:10px; font-size:13.5px; color:var(--text-secondary); line-height:1.6; opacity:0; transform:translateY(8px); transition:opacity .5s ease, transform .5s ease; }
+  .indicator-list li.show{ opacity:1; transform:translateY(0); }
+  .indicator-list li::before{ content:'⚑'; color:var(--gold); flex-shrink:0; }
+  .indicator-head{ font-family:'IBM Plex Mono',monospace; font-size:11.5px; color:var(--gold); text-transform:uppercase; letter-spacing:0.05em; margin:18px 0 4px; }
+  @media (prefers-reduced-motion: reduce){ .causes-sentence, .indicator-list li{ transition:none; } }
+
+  .empty-holdings{ background:var(--bg-raised); border:1px solid var(--card-border); border-radius:10px; padding:16px; font-size:13px; color:var(--text-muted); }
+  .empty-holdings a{ color:var(--gold); text-decoration:underline; }
+  .diag-row{ display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:12.5px; padding:5px 0; }
+  @media (max-width:900px){ .row{ grid-template-columns:1fr !important; } }
+</style>
+</head>
+<body>
+
+  <div class="ticker-wrap"><div class="ticker mono"></div></div>
+  <div class="ticker-note"></div>
+
+  <nav>
+    <a class="logo" href="index.html"><div class="logo-mark"><span>M</span></div>MarketMinds</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="crash-replay.html">Crash replay</a>
+      <a href="modules.html" class="active">Modules</a>
+      <a href="ml-lab.html">ML Lab</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    </div>
+    <a class="nav-cta" href="modules.html">← all modules</a>
+  </nav>
+
+  <section class="page" style="padding-top:36px;" id="pageRoot">
+    <div id="guardMsg" style="display:none;" class="empty-holdings"></div>
+
+    <div id="content" style="display:none;">
+      <div class="mod-hero">
+        <div class="mod-eyebrow" id="modEyebrow"></div>
+        <h2 id="modTitle"></h2>
+        <p class="lede" id="modMeta"></p>
+      </div>
+
+      <div class="panel panel-accent">
+        <h3 style="margin-bottom:14px;">The concept<span id="conceptTopic"></span></h3>
+        <ul class="bullet-list" id="conceptPoints"></ul>
+      </div>
+
+      <div class="section-head" style="margin-top:32px; margin-bottom:14px;">
+        <h2 style="font-size:19px;">Your portfolio, right now</h2>
+      </div>
+      <div class="row equal" id="presentRow">
+        <div class="panel">
+          <div class="panel-head"><h3>Composition</h3></div>
+          <div class="present-bars" id="presentBars"></div>
+        </div>
+        <div class="worth-box">
+          <div class="lbl">Stock portfolio worth</div>
+          <div class="val" id="presentWorth">—</div>
+          <div class="lbl"><span class="pulse-dot"></span>live</div>
+        </div>
+      </div>
+
+      <div class="section-head" style="margin-top:32px; margin-bottom:14px;">
+        <h2 style="font-size:19px;">Run the simulation</h2>
+      </div>
+      <div class="panel" id="simPanel">
+        <div id="simLaunch" class="sim-launch">
+          <p class="sim-lead">Let's see what happened to your portfolio during the <strong id="simEventName"></strong>&hellip;</p>
+          <button class="btn-primary sim-run-btn" id="simRunBtn">▶ Run the simulation</button>
+        </div>
+        <div id="simLoading" class="sim-loading" style="display:none;">
+          <div class="sim-bar"><div class="sim-bar-fill" id="simBarFill"></div></div>
+          <div class="sim-status mono" id="simStatus">loading real prices&hellip;</div>
+        </div>
+        <div id="simResult" class="reveal" style="display:none;"></div>
+      </div>
+
+      <div class="section-head reveal" id="fixHead" style="margin-top:32px; margin-bottom:14px; display:none;">
+        <h2 style="font-size:19px;">Fix your portfolio</h2>
+        <p class="lede">A real stock market, just like Portfolio, except this copy is <strong style="color:var(--text-primary);">completely separate</strong> from your real account. Trade here to see what changes.</p>
+      </div>
+      <div class="row equal reveal" id="fixRow" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><h3>Practice stock market</h3><span class="badge neutral" id="fixDateBadge">—</span></div>
+          <div class="search-row"><input type="text" id="searchBox" placeholder="Search RELIANCE, TCS, gold..."></div>
+          <div id="browserList"></div>
+          <div class="hr"></div>
+          <h4 style="font-size:12.5px; margin-bottom:8px; color:var(--text-muted);">Your practice holdings</h4>
+          <div id="practiceHoldingsList"></div>
+        </div>
+        <div>
+          <div id="feedbackCol"></div>
+          <div id="updatedResultBox"></div>
+        </div>
+      </div>
+
+      <div class="panel causes-panel" style="margin-top:16px;" id="causesPanelWrap">
+        <h3 style="margin-bottom:14px;">What actually caused this</h3>
+        <div id="causesSentences"></div>
+        <div class="indicator-head">Watch for these signs</div>
+        <ul class="indicator-list" id="indicatorList"></ul>
+      </div>
+
+      <a class="btn-secondary" href="modules.html" style="display:inline-block; margin-top:20px;">← Back to all modules</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>MarketMinds · simulated money, real history.</span>
+    <span>Not investment advice · Educational simulation only</span>
+  </footer>
+
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h3 id="modalTitle">Buy</h3>
+      <div class="sub" id="modalSub">—</div>
+      <label>Quantity (shares)</label>
+      <input type="number" id="modalQty" min="1" step="1" value="1">
+      <div class="summary" id="modalSummary">—</div>
+      <div class="note-line" id="modalNote"></div>
+      <div class="err" id="modalErr"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modalCancel">Cancel</button>
+        <button class="btn-primary" id="modalConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/data.js?v=5"></script>
+  <script src="assets/js/portfolio.js?v=5"></script>
+  <script src="assets/js/app.js?v=5"></script>
+  <script src="assets/js/ticker.js?v=7"></script>
+  <script src="assets/js/market.js"></script>
+  <script src="assets/js/account.js"></script>
+  <script>
+  (function () {
+    const TICKER_LABELS = {
+      '^BSESN': 'SENSEX (Index)', '^NSEI': 'NIFTY 50 (Index)', 'GOLDBEES.NS': 'GOLD ETF',
+      'RELIANCE.NS': 'Reliance Industries', 'TCS.NS': 'Tata Consultancy Services', 'INFY.NS': 'Infosys',
+      'WIPRO.NS': 'Wipro', 'HDFCBANK.NS': 'HDFC Bank', 'ICICIBANK.NS': 'ICICI Bank',
+      'KOTAKBANK.NS': 'Kotak Mahindra Bank', 'HINDUNILVR.NS': 'Hindustan Unilever', 'ITC.NS': 'ITC',
+      'NESTLEIND.NS': 'Nestle India', 'DRREDDY.NS': "Dr. Reddy's Labs", 'SUNPHARMA.NS': 'Sun Pharma',
+      'MARUTI.NS': 'Maruti Suzuki', 'TATASTEEL.NS': 'Tata Steel', 'ULTRACEMCO.NS': 'UltraTech Cement',
+      'LT.NS': 'Larsen & Toubro', 'ONGC.NS': 'ONGC',
+    };
+    function label(t) { return TICKER_LABELS[t] || t; }
+    function fmt(n) { return MMApp.formatINR(n, { decimals: 2 }); }
+
+    const TOPIC_NAME = {
+      dotcom: 'Risk & Volatility', bullrun: 'Compounding', gfc2008: 'Diversification',
+      recovery0910: 'Recovery Timing', demon2016: 'Policy Shocks', covid2020: 'Panic vs. Patience',
+      postcovid: 'Rebalancing', correction2425: 'Safe Havens',
+    };
+
+    const LESSONS = {
+      bullrun: { points: [
+        'Compounding turns steady annual gains into an exponential curve, not a straight line. The longer money stays invested through a full cycle, the more of the total return comes from the later years.',
+        'During the Bull Run, this showed up as a multi-year, uninterrupted expansion: the Sensex went from roughly 3,120 to an all-time high above 21,000, nearly 6x, over almost five years.',
+        "Investors who stayed fully invested captured most of the compounding; investors who traded in and out to 'lock in gains' early gave up the years where most of the total return actually happened.",
+      ]},
+      dotcom: { points: [
+        'Higher expected long-run returns always come with real variance along the way. A portfolio that looks reasonable on paper can still lose a third or more of its value inside 18 months.',
+        "During the Dot-com crash, this showed up as tech and IT-adjacent stocks, priced for growth that hadn't happened yet, falling hardest once that story broke.",
+        'The Sensex fell roughly 40% from its Feb 2000 peak in barely 19 months, compounded by the domestic Ketan Parekh scandal hitting the same stocks.',
+      ]},
+      gfc2008: { points: [
+        "Concentration risk: a portfolio parked in one or two correlated sectors falls harder in a systemic shock than one spread across sectors that don't move together.",
+        'During the 2008 crisis, this showed up as almost everything falling together, but cyclical, credit-sensitive sectors (banking, realty, metals) fell hardest, while more defensive names cushioned the blow.',
+        "The Sensex fell roughly 61.5% from its Jan 2008 peak to the Mar 2009 trough, the deepest drawdown in this dataset.",
+      ]},
+      recovery0910: { points: [
+        'Trying to call the exact bottom is unreliable. Missing just the first few weeks of a recovery can cost a disproportionate share of the total gain, because the sharpest bounces off a bottom often happen earliest.',
+        "During the 2009-10 recovery, this showed up as a rally that started before the 'bad news' stopped: the Sensex rallied roughly 150% in under two years, and much of that came in the first few months.",
+        'Investors waiting for a clearer, safer-looking signal to re-enter typically bought back in well after the cheapest prices were already gone.',
+      ]},
+      demon2016: { points: [
+        'Non-economic policy decisions can move markets sharply and immediately, independent of company fundamentals, but those shocks are often shallower and shorter-lived than structural crises.',
+        'During demonetization, this showed up as a short, sharp dip driven by a cash-economy disruption, not by any company suddenly earning less.',
+        'The Sensex dipped only about 5% into late December 2016, much smaller and quicker than the crashes elsewhere in this curriculum.',
+      ]},
+      covid2020: { points: [
+        'Selling during a crash locks in the loss on paper; staying invested captures the eventual recovery. The gap between panic-selling near the bottom and staying the course is often the single biggest swing factor in long-run return.',
+        'During COVID, this showed up as the fastest crash in the dataset: the Sensex fell about 38% in barely five weeks, then rallied roughly 138% off that low within 19 months.',
+        'Anyone who sold near the bottom out of fear needed a much larger subsequent gain just to get back to even, let alone participate in the recovery.',
+      ]},
+      postcovid: { points: [
+        "A portfolio's weights drift as its components grow at different rates. After a big rally in one sleeve, 'doing nothing' quietly turns into a much riskier allocation than originally intended.",
+        'During the post-COVID rally, this showed up as equity outperforming so much that even a portfolio that started balanced ended up heavily equity-weighted without a single trade being made.',
+        'The rally added roughly 138% to the Sensex from the COVID low. The more equity ran up, the further an untouched portfolio drifted from its original risk level.',
+      ]},
+      correction2425: { points: [
+        "Gold tends to be weakly or negatively correlated with equity during systemic stress, which is why it's historically used as a portfolio 'shock absorber' rather than a growth engine.",
+        'During the 2024-25 correction, this showed up as gold continuing to climb even as equities pulled back double digits from their September 2024 high.',
+        'A portfolio with zero safe-haven exposure had nothing offsetting the equity drawdown; even a small allocation to gold would have cushioned the fall.',
+      ]},
+    };
+
+    const MISTAKE_FRAME = {
+      bullrun: (t, p) => `${t} grew ${p} here, real growth, but less than a holding that got the full multi-year runway to compound. A stock that gets traded in and out never earns the benefit of years 3, 4, and 5, which is where most of a bull run's total return actually happens.`,
+      dotcom: (t, p) => `${t} fell ${p} through this window, a sign it was priced more on story and growth expectations than on earnings actually being delivered, exactly the kind of stock that gets hit hardest when a speculative bubble unwinds.`,
+      gfc2008: (t, p) => `${t} fell ${p}. A cyclical, credit-sensitive holding like this is exactly what gets hit hardest when global credit markets freeze, since its business depends on borrowing and spending continuing normally.`,
+      recovery0910: (t, p) => `${t} gained ${p}, real growth, but consistent with a position that wasn't in place for the earliest, steepest part of the bounce, which is the single most common reason investors miss most of a recovery's total return.`,
+      demon2016: (t, p) => `${t} fell ${p}, likely a cash- or informal-economy-exposed business, which took the direct hit from the currency-note withdrawal even though nothing about its long-term earnings power had actually changed.`,
+      covid2020: (t, p) => `${t} fell ${p} in this window. A sharp, fear-driven drawdown like this is exactly when the instinct to sell is strongest, and exactly when selling locks in a loss that a few months of patience would have recovered.`,
+      postcovid: (t, p) => `${t} only gained ${p} while the rest of the rally ran far ahead of it. This is the same drift the concept warns about, just from the other side. A laggard's weight quietly shrinks while a bigger winner's weight quietly grows, and neither happens because you chose it.`,
+      correction2425: (t, p) => `${t} fell ${p}, an equity-only holding with no safe-haven counterweight has nothing working against it when the whole market corrects, which is exactly what a small gold allocation is meant to offset.`,
+    };
+    const STRENGTH_FRAME = {
+      bullrun: (t, p) => `${t} returned ${p} by riding the entire rally. This is compounding working exactly as intended: the position wasn't touched, so every year's gain became the base for the next year's gain.`,
+      dotcom: (t, p) => `${t} held up better at ${p}. During a volatility shock, a business whose earnings didn't depend on a speculative story is worth more than a flashier growth pitch.`,
+      gfc2008: (t, p) => `${t} moved ${p}, much better than the rest. Defensive, less credit-dependent businesses like this are exactly what diversification is meant to protect you with during a systemic shock.`,
+      recovery0910: (t, p) => `${t} gained ${p} by being held straight through the bottom. Capturing the earliest, steepest part of the recovery is exactly what makes staying invested through the trough so valuable.`,
+      demon2016: (t, p) => `${t} held at ${p}, a business less dependent on cash transactions was largely insulated from a policy shock like this one, even though the headlines looked alarming.`,
+      covid2020: (t, p) => `${t} only moved ${p}, holding up better than most. Staying in a resilient position through a panic-driven crash like this is what let it fully participate once the recovery began.`,
+      postcovid: (t, p) => `${t} contributed ${p} here. The lesson isn't to avoid gains like this, it's to periodically trim outsized winners back toward your original target weights so future risk stays intentional.`,
+      correction2425: (t, p) => `${t} moved ${p}. The reason a safe-haven asset like this helps isn't that it never falls, it's that it tends to zig when equities zag, smoothing the ride during exactly this kind of correction.`,
+    };
+
+    const CAUSES = {
+      bullrun: 'Early-2000s economic reforms taking hold, strong GDP growth (~8-9%), a boom in IT/BPO exports, heavy foreign institutional investor (FII) inflows chasing emerging-market returns, easy global liquidity, and rising corporate earnings all fed a multi-year re-rating of Indian equities.',
+      dotcom: "A global tech bubble, years of internet-company valuations detached from actual earnings, burst starting in the US in 2000. In India this coincided with the Ketan Parekh scandal, where a broker used circular trading and borrowed bank funds to manipulate a set of tech/media stocks. When it unraveled it hit the same stocks the global bubble was already deflating. The Sep 2001 attacks added a second shock on top of an already-weak market.",
+      gfc2008: 'The US subprime mortgage crisis and the collapse of Lehman Brothers in Sep 2008 froze global credit markets. FIIs pulled money out of emerging markets, including India, to cover losses and de-risk. Commodity prices collapsed, and fears of a global recession hit corporate earnings expectations across the board.',
+      covid2020: 'The World Health Organization declared COVID-19 a pandemic in March 2020. Countries including India announced sudden, nationwide lockdowns, halting economic activity almost overnight. Markets worldwide fell in unison as investors priced in a demand shock with no historical precedent to size it against.',
+      correction2425: "A combination of stretched valuations after the post-COVID run-up, heavy FII selling as global capital rotated toward China's stimulus-driven market in late 2024, slowing corporate earnings growth, and global trade-policy uncertainty around US tariff threats into early 2025 all weighed on Indian equities.",
+      recovery0910: "Coordinated global monetary and fiscal stimulus in response to the 2008 crisis (rate cuts, bailout packages) stabilized credit markets. FII money flowed back into emerging markets as risk appetite returned. India's May 2009 election delivered a stable majority government, which markets responded to with one of the sharpest single-day rallies on record.",
+      demon2016: 'On 8 Nov 2016, the Indian government withdrew ₹500 and ₹1,000 notes overnight to target black money and counterfeit currency. The resulting cash crunch disrupted the informal economy. Because it was a liquidity and procedural shock rather than a threat to corporate earnings, the market reaction was real but comparatively shallow and short-lived.',
+      postcovid: 'Central banks worldwide held rates near zero and pumped liquidity into markets. India saw a surge in retail investor participation, with many new demat accounts opened during lockdown. Vaccine-rollout optimism built through 2021, and corporate earnings recovered faster than expected, all pushing markets to new highs.',
+    };
+
+    const INDICATORS = {
+      bullrun: [
+        'GDP growth accelerating for multiple consecutive quarters, not just one good quarter',
+        'Sustained foreign institutional investor (FII) inflows over years, not weeks',
+        'Corporate earnings growth broad-based across sectors, not concentrated in one theme',
+        'Credit growth and IPO activity both picking up steadily, a sign of durable confidence',
+      ],
+      dotcom: [
+        "Stock prices rising much faster than the company's actual profit growth",
+        'A wave of new listings/IPOs in one hot sector, many without real earnings yet',
+        "Analysts and media repeating some version of 'the old rules don't apply anymore'",
+        'A handful of stocks or one sector making up a disproportionate share of index gains',
+      ],
+      gfc2008: [
+        'Rapid growth in lending or credit that looks disconnected from income growth',
+        'A major financial institution failing or needing a bailout',
+        'Interbank lending rates spiking, banks no longer trust each other',
+        'Commodity prices collapsing alongside equities, signaling demand fear, not just a stock correction',
+      ],
+      recovery0910: [
+        'Central banks and governments announcing large, coordinated stimulus',
+        'Credit markets unfreezing, interbank rates falling back toward normal',
+        'A stable election outcome or major policy clarity removing uncertainty',
+        "Risk appetite returning to emerging markets before local news 'feels' safe yet",
+      ],
+      demon2016: [
+        'A sudden, non-economic government policy announcement: currency, tax, or regulation',
+        'Disruption concentrated in cash-heavy or informal-economy sectors',
+        'No change in underlying corporate earnings guidance despite the market move',
+        'Recovery within weeks to a couple of months once the immediate disruption normalizes',
+      ],
+      covid2020: [
+        'A sudden, unprecedented external shock with no historical playbook to size it against',
+        'Extremely high daily volatility and trading volumes across the whole market, not one sector',
+        'Panic-driven headlines and forced or margin-call selling, not earnings-driven selling',
+        'Central bank and government emergency measures announced within days',
+      ],
+      postcovid: [
+        'One asset class or sector rallying much faster than the rest of the portfolio for months',
+        'Near-zero interest rates and heavy liquidity pushing money into riskier assets',
+        'A visible surge in new retail trading accounts and participation',
+        "Your own portfolio's composition looking noticeably different from when you built it, without you having traded",
+      ],
+      correction2425: [
+        'Stretched equity valuations after a long run-up, with earnings growth not keeping pace',
+        'Heavy foreign investor selling as capital rotates to another market',
+        'Global trade-policy uncertainty or tariff threats weighing on sentiment',
+        'Gold and other safe-haven assets rising while equity indices are falling',
+      ],
+    };
+
+    const params = new URLSearchParams(location.search);
+    const id = params.get('id');
+    const ev = MM.EVENTS.find((e) => e.id === id);
+    const passed = !!MMApp.Storage.get('basicsPassed', false);
+
+    if (!ev || !passed) {
+      document.getElementById('guardMsg').style.display = 'block';
+      document.getElementById('guardMsg').innerHTML = !ev
+        ? `No such module. <a href="modules.html">Back to Modules →</a>`
+        : `Complete the Basics concept check on <a href="modules.html">the Modules page</a> first. It unlocks all 8 modules at once.`;
+      return;
+    }
+    document.getElementById('content').style.display = 'block';
+    document.getElementById('pageRoot').classList.add(ev.badge === 'rally' ? 'theme-rally' : 'theme-crash');
+
+    const L = LESSONS[id];
+    const topic = TOPIC_NAME[id];
+    const retTxt = MMApp.formatPct(ev.realReturnPct);
+    document.getElementById('modEyebrow').textContent = `${ev.badge === 'rally' ? '▲' : '▼'} module ${String(ev.moduleNum).padStart(2, '0')} · ${ev.short}`;
+    document.title = `${topic} – ${ev.short} · MarketMinds`;
+    document.getElementById('modTitle').textContent = `${topic} – ${ev.short}`;
+    document.getElementById('modMeta').textContent = `${ev.start} → ${ev.end} · real event return ${retTxt}`;
+    document.getElementById('conceptTopic').textContent = `: ${topic}`;
+    document.getElementById('conceptPoints').innerHTML = L.points.map((p) => `<li>${p}</li>`).join('');
+    document.getElementById('simEventName').textContent = ev.short;
+
+    MMMarket.load().then(() => {
+      const acc = MMAccount.load();
+      const holdingTickers = Object.keys(acc.holdings).filter((t) => acc.holdings[t].shares > 0);
+
+      function renderPresent() {
+        const total = holdingTickers.reduce((s, t) => s + acc.holdings[t].shares * MMMarket.getPrice(t), 0);
+        document.getElementById('presentWorth').textContent = fmt(total);
+        if (!holdingTickers.length) {
+          document.getElementById('presentBars').innerHTML = `<div class="empty-holdings">No holdings yet. Buy some stocks in <a href="portfolio.html">Portfolio</a> first.</div>`;
+          return;
+        }
+        const rows = holdingTickers.map((t) => ({ t, worth: acc.holdings[t].shares * MMMarket.getPrice(t) })).sort((a, b) => b.worth - a.worth);
+        document.getElementById('presentBars').innerHTML = rows.map((r) => `
+          <div class="present-bar-row">
+            <div class="top"><span>${label(r.t)}</span><span>${fmt(r.worth)}</span></div>
+            <div class="present-bar-track"><div class="present-bar-fill" style="width:${total > 0 ? (r.worth / total * 100) : 0}%"></div></div>
+          </div>`).join('');
+      }
+      renderPresent();
+      setInterval(renderPresent, 5000);
+
+      let resultHTML = '';
+      let correctionSetup = null;
+
+      if (!holdingTickers.length) {
+        resultHTML = `<div class="empty-holdings">Buy some stocks in <a href="portfolio.html">Portfolio</a> first. This replays <em>your own</em> real holdings against ${ev.short}.</div>`;
+      } else {
+        const dates = MMMarket.getRealDatesBetween(ev.start, ev.end);
+        if (!dates.length) {
+          resultHTML = `<div class="empty-holdings">No real market data for this window yet.</div>`;
+        } else {
+          const included = [], excluded = [];
+          holdingTickers.forEach((t) => {
+            const p0 = MMMarket.getRealPriceOnDate(t, dates[0]), p1 = MMMarket.getRealPriceOnDate(t, dates[dates.length - 1]);
+            if (p0 != null && p1 != null) included.push(t); else excluded.push(t);
+          });
+
+          if (!included.length) {
+            const available = MMMarket.tickers.filter((t) => MMMarket.getRealPriceOnDate(t, dates[0]) != null && MMMarket.getRealPriceOnDate(t, dates[dates.length - 1]) != null);
+            resultHTML = `<div class="empty-holdings">None of your current holdings have real market data covering ${ev.start}–${ev.end}. Some of these companies weren't listed yet, or the data doesn't go back that far.${available.length ? ` Stocks that <em>do</em> have real data for this window: <strong style="color:var(--text-primary);">${available.join(', ')}</strong>. Buy one of those in <a href="portfolio.html">Portfolio</a> to see this module.` : ' No basket asset has real data this far back for this window.'}</div>`;
+          } else {
+            const startPrices = {}; included.forEach((t) => { startPrices[t] = MMMarket.getRealPriceOnDate(t, dates[0]); });
+            const startTotal = included.reduce((s, t) => s + acc.holdings[t].shares * startPrices[t], 0);
+            const replayPts = dates.map((d, i) => ({ x: i, y: included.reduce((s, t) => s + acc.holdings[t].shares * MMMarket.getRealPriceOnDate(t, d), 0) }));
+            const endTotal = replayPts[replayPts.length - 1].y;
+            const studentReturnPct = ((endTotal / startTotal) - 1) * 100;
+            const lagPts = replayPts.map((p, i) => ({ x: i, y: replayPts[Math.max(0, i - 5)].y }));
+
+            const basketTickers = MMMarket.tickers.filter((t) => MMMarket.getRealPriceOnDate(t, dates[0]) != null && MMMarket.getRealPriceOnDate(t, dates[dates.length - 1]) != null);
+            const tickerReturn = (t) => (MMMarket.getRealPriceOnDate(t, dates[dates.length - 1]) / MMMarket.getRealPriceOnDate(t, dates[0]) - 1) * 100;
+            const benchReturnPct = basketTickers.reduce((s, t) => s + tickerReturn(t), 0) / basketTickers.length;
+            const perHolding = included.map((t) => ({ t, r: tickerReturn(t), v0: acc.holdings[t].shares * startPrices[t], v1: acc.holdings[t].shares * MMMarket.getRealPriceOnDate(t, dates[dates.length - 1]) })).sort((a, b) => b.r - a.r);
+            const worst = perHolding[perHolding.length - 1];
+            const best = basketTickers.map((t) => ({ t, r: tickerReturn(t) })).sort((a, b) => b.r - a.r)[0];
+            const bestHeld = perHolding[0];
+            const gap = studentReturnPct - benchReturnPct;
+            const winMetrics = MM.ML_METRICS.bsesn[id];
+            const rf = winMetrics && winMetrics.random_forest;
+
+            const compareRows = perHolding.map((h) => `<tr><td>${label(h.t)}</td><td>${fmt(h.v0)}</td><td>${fmt(h.v1)}</td><td class="${h.r >= 0 ? 'pos' : 'neg'}">${MMApp.formatPct(h.r)}</td></tr>`).join('');
+
+            resultHTML = `
+              <div class="row equal">
+                <div>
+                  <div class="verdict-strip">
+                    <h3 style="font-size:15px;">Portfolio through ${ev.short}</h3>
+                  </div>
+                  <div class="chart-area short"><canvas id="replayChart"></canvas></div>
+                  <div class="legend">
+                    <span><span class="dot" style="background:#17D97A"></span>Your holdings, real prices</span>
+                    <span><span class="dot" style="background:#8B7CF6"></span>Illustrative forecast*</span>
+                  </div>
+                  ${excluded.length ? `<div class="note" style="margin-top:8px;">Excluded (no real data this far back): ${excluded.join(', ')}</div>` : ''}
+                </div>
+                <div class="worth-box">
+                  <div class="lbl">New stock portfolio worth</div>
+                  <div class="val ${studentReturnPct >= 0 ? 'pos' : 'neg'}">${fmt(endTotal)}</div>
+                  <div class="lbl">was ${fmt(startTotal)} · <span class="${studentReturnPct >= 0 ? 'pos' : 'neg'}">${MMApp.formatPct(studentReturnPct)}</span></div>
+                </div>
+              </div>
+              <div class="hr"></div>
+              <h4 style="font-size:13px; margin-bottom:10px;">What changed, stock by stock</h4>
+              <div class="table-scroll"><table class="data-table">
+                <thead><tr><th>Stock</th><th>Start value</th><th>End value</th><th>Change</th></tr></thead>
+                <tbody>${compareRows}</tbody>
+              </table></div>
+              <div class="hr"></div>
+              <div class="diag-row"><span class="k">Equal-weight basket (${basketTickers.length} assets)</span><span class="mono">${MMApp.formatPct(benchReturnPct)}</span></div>
+              <div class="diag-row"><span class="k">Your gap vs. basket</span><span class="mono ${gap >= 0 ? 'pos' : 'neg'}">${MMApp.formatPct(gap)}</span></div>
+              ${rf ? `<div class="diag-row"><span class="k">What ML predicted (real Random Forest, this window)</span><span class="mono">${rf.dir_acc_pct}% dir. accuracy${rf.sig_worse ? ', significantly worse than random' : rf.sig_better ? ', significantly better than random' : ''}</span></div>` : ''}`;
+
+            correctionSetup = { id, dates, startPrices, worst, best, bestHeld, studentReturnPct, startTotal, endTotal, acc, included, basketTickers, tickerReturn, benchReturnPct, resultHTML: () => resultHTML };
+          }
+        }
+      }
+
+      document.getElementById('simRunBtn').addEventListener('click', () => {
+        const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+        document.getElementById('simLaunch').style.display = 'none';
+
+        const finish = () => {
+          document.getElementById('simLoading').style.display = 'none';
+          const resultEl = document.getElementById('simResult');
+          resultEl.innerHTML = resultHTML;
+          resultEl.style.display = 'block';
+          requestAnimationFrame(() => resultEl.classList.add('show'));
+
+          if (correctionSetup) {
+            renderReplayChart(correctionSetup);
+            setupFixSection(correctionSetup);
+          }
+          revealCauses();
+        };
+
+        if (reduceMotion) { finish(); return; }
+
+        document.getElementById('simLoading').style.display = 'block';
+        const bar = document.getElementById('simBarFill');
+        const status = document.getElementById('simStatus');
+        const steps = ['loading real prices…', `replaying ${holdingTickers.length} holdings…`, 'comparing against the market…', 'calculating your return…'];
+        let step = 0;
+        requestAnimationFrame(() => { bar.style.width = '100%'; });
+        const stepTimer = setInterval(() => {
+          step++;
+          if (step < steps.length) status.textContent = steps[step];
+        }, 260);
+        setTimeout(() => { clearInterval(stepTimer); finish(); }, 1150);
+      });
+
+      function renderReplayChart(setup) {
+        const { dates, startPrices, acc } = setup;
+        const included = Object.keys(startPrices);
+        const replayPts = dates.map((d, i) => ({ x: i, y: included.reduce((s, t) => s + acc.holdings[t].shares * MMMarket.getRealPriceOnDate(t, d), 0) }));
+        const lagPts = replayPts.map((p, i) => ({ x: i, y: replayPts[Math.max(0, i - 5)].y }));
+        MMApp.drawLineChart(document.getElementById('replayChart'), [
+          { points: replayPts, color: '#17D97A', width: 2 },
+          { points: lagPts, color: '#8B7CF6', width: 1.6, dash: [4, 3] },
+        ], { gridLines: 3 });
+      }
+
+      function setupFixSection(setup) {
+        const { id, dates, startPrices, worst, best, bestHeld, studentReturnPct, startTotal, endTotal, acc, basketTickers, tickerReturn, benchReturnPct, resultHTML } = setup;
+        const tradableSet = new Set(basketTickers);
+
+        document.getElementById('fixHead').style.display = 'block';
+        document.getElementById('fixRow').style.display = 'grid';
+        requestAnimationFrame(() => setTimeout(() => { document.getElementById('fixHead').classList.add('show'); document.getElementById('fixRow').classList.add('show'); }, 60));
+        document.getElementById('fixDateBadge').textContent = `priced as of ${dates[0]}`;
+
+        const practiceKey = 'practice_' + id;
+        function loadPractice() {
+          let p = MMApp.Storage.get(practiceKey, null);
+          if (!p || typeof p.cash !== 'number') { p = { cash: acc.cash, holdings: JSON.parse(JSON.stringify(acc.holdings)), trades: 0 }; MMApp.Storage.set(practiceKey, p); }
+          return p;
+        }
+        function savePractice(p) { MMApp.Storage.set(practiceKey, p); }
+
+        function practiceTradableHoldings(p) {
+          return Object.keys(p.holdings).filter((t) => p.holdings[t].shares > 0 && tradableSet.has(t));
+        }
+        function practiceEndTotal(p) {
+          return practiceTradableHoldings(p).reduce((s, t) => s + p.holdings[t].shares * MMMarket.getRealPriceOnDate(t, dates[dates.length - 1]), 0);
+        }
+        function practiceStartTotal(p) {
+          return practiceTradableHoldings(p).reduce((s, t) => s + p.holdings[t].shares * MMMarket.getRealPriceOnDate(t, dates[0]), 0);
+        }
+
+        function renderBrowser(filter) {
+          const q = (filter || '').toLowerCase();
+          const rows = MMMarket.tickers
+            .filter((t) => !q || t.toLowerCase().includes(q) || label(t).toLowerCase().includes(q))
+            .map((t) => {
+              const hasHist = tradableSet.has(t);
+              const price = MMMarket.getPrice(t);
+              return `<div class="asset-row ${hasHist ? '' : 'no-data'}" data-ticker="${t}">
+                <div class="name">${label(t)}<span class="sub">${t}</span></div>
+                <div class="price">${fmt(price)}</div>
+                <button class="btn-small" data-action="buy" data-ticker="${t}" ${hasHist ? '' : 'disabled title="no data this far back"'}>Buy</button>
+              </div>`;
+            }).join('');
+          document.getElementById('browserList').innerHTML = rows;
+        }
+
+        function renderPracticeHoldings() {
+          const p = loadPractice();
+          const tks = Object.keys(p.holdings).filter((t) => p.holdings[t].shares > 0);
+          if (!tks.length) { document.getElementById('practiceHoldingsList').innerHTML = `<div class="empty-holdings">No practice holdings yet.</div>`; return; }
+          document.getElementById('practiceHoldingsList').innerHTML = tks.map((t) => `
+            <div class="practice-holding-row">
+              <span>${label(t)}</span><span>${p.holdings[t].shares.toFixed(2)}</span>
+              <button class="btn-small" data-action="sell" data-ticker="${t}">Sell</button>
+            </div>`).join('');
+        }
+
+        function renderFeedback() {
+          const p = loadPractice();
+          const worstStillHeld = p.holdings[worst.t] && p.holdings[worst.t].shares > 0;
+          const bestNowHeld = p.holdings[best.t] && p.holdings[best.t].shares > 0;
+
+          let recommendBlock;
+          if (!worstStillHeld && bestNowHeld) {
+            recommendBlock = `<div class="feedback-block good">
+                <span class="ttl">Correction made</span>
+                <p>You sold <strong>${label(worst.t)}</strong> and bought <strong>${label(best.t)}</strong>, exactly the move suggested here. ${STRENGTH_FRAME[id](label(best.t), MMApp.formatPct(tickerReturn(best.t)))} See the updated result below.</p>
+              </div>`;
+          } else if (!worstStillHeld && !bestNowHeld) {
+            recommendBlock = `<div class="feedback-block recommend">
+                <span class="ttl">Halfway there</span>
+                <p>You've sold <strong>${label(worst.t)}</strong>. Now buy <strong>${label(best.t)}</strong> in the practice market to complete the move. Priced as of ${dates[0]}, ${label(best.t)} went on to return ${MMApp.formatPct(tickerReturn(best.t))} across this window.</p>
+              </div>`;
+          } else if (worstStillHeld && bestNowHeld) {
+            recommendBlock = `<div class="feedback-block recommend">
+                <span class="ttl">Halfway there</span>
+                <p>You've bought <strong>${label(best.t)}</strong>. Now sell <strong>${label(worst.t)}</strong> in the practice market to complete the move and free up the cash it was tying down.</p>
+              </div>`;
+          } else {
+            recommendBlock = `<div class="feedback-block recommend">
+                <span class="ttl">What we'd suggest</span>
+                <p>Consider selling <strong>${label(worst.t)}</strong> and buying <strong>${label(best.t)}</strong> instead. Priced as of ${dates[0]}, ${label(best.t)} went on to return ${MMApp.formatPct(tickerReturn(best.t))} across this window. ${STRENGTH_FRAME[id](label(best.t), MMApp.formatPct(tickerReturn(best.t)))} Use the practice market on the left to actually make the trade.</p>
+              </div>`;
+          }
+
+          const extraTickers = Object.keys(p.holdings).filter((t) => p.holdings[t].shares > 0 && tradableSet.has(t) && t !== worst.t && t !== best.t && t !== bestHeld.t);
+          const extraBlocks = extraTickers.map((t) => {
+            const r = tickerReturn(t);
+            const good = r >= benchReturnPct;
+            const frame = good ? STRENGTH_FRAME[id](label(t), MMApp.formatPct(r)) : MISTAKE_FRAME[id](label(t), MMApp.formatPct(r));
+            return `<div class="feedback-block ${good ? 'good' : 'mistake'}">
+                <span class="ttl">Your other trade: ${label(t)}</span>
+                <p>${frame} ${good ? `That's above the ${MMApp.formatPct(benchReturnPct)} basket average this window, a reasonable pickup.` : `That's below the ${MMApp.formatPct(benchReturnPct)} basket average this window, worth reconsidering.`}</p>
+              </div>`;
+          }).join('');
+
+          document.getElementById('feedbackCol').innerHTML = `
+            <div class="feedback-block mistake">
+              <span class="ttl">Your mistake</span>
+              <p>${MISTAKE_FRAME[id](label(worst.t), MMApp.formatPct(worst.r))} <strong>How to spot it next time:</strong> check whether a holding's business model actually fits the theme of the moment. It usually shows up in the numbers before the price confirms it.</p>
+            </div>
+            ${recommendBlock}
+            <div class="feedback-block good">
+              <span class="ttl">What you got right</span>
+              <p>${STRENGTH_FRAME[id](label(bestHeld.t), MMApp.formatPct(bestHeld.r))}</p>
+            </div>
+            ${extraBlocks}`;
+        }
+
+        function renderUpdatedResult() {
+          const p = loadPractice();
+          if (!p.trades) {
+            document.getElementById('updatedResultBox').innerHTML = '';
+            return;
+          }
+          document.getElementById('updatedResultBox').innerHTML = `
+            <div class="updated-result">
+              <div class="row-line"><span>Practice trades made</span><strong>${p.trades}</strong></div>
+              <button class="btn-primary sim-run-btn" id="rerunSimBtn" style="margin-top:10px; width:100%;">▶ Run the simulation again</button>
+              <button class="btn-secondary" id="resetPracticeBtn" style="margin-top:8px; width:100%;">Reset practice copy</button>
+            </div>`;
+          document.getElementById('resetPracticeBtn').addEventListener('click', () => {
+            savePractice({ cash: acc.cash, holdings: JSON.parse(JSON.stringify(acc.holdings)), trades: 0 });
+            renderPracticeHoldings();
+            renderFeedback();
+            renderUpdatedResult();
+          });
+          document.getElementById('rerunSimBtn').addEventListener('click', runPracticeSimulation);
+        }
+
+        function runPracticeSimulation() {
+          const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+          const resultEl = document.getElementById('simResult');
+          document.getElementById('simPanel').scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
+
+          const finish = () => {
+            const p = loadPractice();
+            const s0 = practiceStartTotal(p), s1 = practiceEndTotal(p);
+            const pct = s0 > 0 ? ((s1 / s0) - 1) * 100 : 0;
+            const heldTradable = practiceTradableHoldings(p);
+            const replayPts = dates.map((d, i) => ({ x: i, y: heldTradable.reduce((s, t) => s + p.holdings[t].shares * MMMarket.getRealPriceOnDate(t, d), 0) }));
+            const compareRows = heldTradable
+              .map((t) => ({ t, v0: p.holdings[t].shares * MMMarket.getRealPriceOnDate(t, dates[0]), v1: p.holdings[t].shares * MMMarket.getRealPriceOnDate(t, dates[dates.length - 1]) }))
+              .map((h) => ({ ...h, r: (h.v1 / h.v0 - 1) * 100 }))
+              .sort((a, b) => b.r - a.r)
+              .map((h) => `<tr><td>${label(h.t)}</td><td>${fmt(h.v0)}</td><td>${fmt(h.v1)}</td><td class="${h.r >= 0 ? 'pos' : 'neg'}">${MMApp.formatPct(h.r)}</td></tr>`)
+              .join('');
+            const gap = pct - studentReturnPct;
+
+            resultEl.innerHTML = heldTradable.length ? `
+              <div class="badge neutral" style="margin-bottom:12px; display:inline-block;">practice portfolio (after your changes)</div>
+              <div class="verdict-strip">
+                <h3 style="font-size:15px;">Practice portfolio, replayed through ${ev.short}</h3>
+                <span class="big ${pct >= 0 ? 'pos' : 'neg'}" style="color:${pct >= 0 ? 'var(--green)' : 'var(--red)'};">${MMApp.formatPct(pct)}</span>
+              </div>
+              <div class="chart-area short"><canvas id="replayChart"></canvas></div>
+              <div class="legend">
+                <span><span class="dot" style="background:${pct >= 0 ? '#17D97A' : '#FF4B5C'}"></span>Practice holdings, real prices</span>
+              </div>
+              <div class="hr"></div>
+              <h4 style="font-size:13px; margin-bottom:10px;">What changed, stock by stock</h4>
+              <div class="table-scroll"><table class="data-table">
+                <thead><tr><th>Stock</th><th>Start value</th><th>End value</th><th>Change</th></tr></thead>
+                <tbody>${compareRows}</tbody>
+              </table></div>
+              <div class="hr"></div>
+              <div class="diag-row"><span class="k">Your real (unswapped) return</span><span class="mono ${studentReturnPct >= 0 ? 'pos' : 'neg'}">${MMApp.formatPct(studentReturnPct)}</span></div>
+              <div class="diag-row"><span class="k">Difference</span><span class="mono ${gap >= 0 ? 'pos' : 'neg'}">${MMApp.formatPct(gap)}</span></div>
+              <p class="note" style="margin-top:10px;">${gap > 0
+                ? `Your practice mix beat your real, unswapped return by ${MMApp.formatPct(gap)} over this window.`
+                : gap < 0 ? `Your practice mix is behind your real, unswapped return by ${MMApp.formatPct(Math.abs(gap))} over this window.`
+                : `No change from your real, unswapped return yet.`}</p>
+              <a href="#" class="btn-secondary" id="backToRealBtn" style="display:inline-block; margin-top:12px;">← Back to your real portfolio result</a>`
+              : `<div class="empty-holdings">Your practice portfolio is empty right now, nothing left to simulate. Buy something in the practice market to try again.</div>
+                 <a href="#" class="btn-secondary" id="backToRealBtn" style="display:inline-block; margin-top:12px;">← Back to your real portfolio result</a>`;
+
+            if (heldTradable.length) {
+              MMApp.drawLineChart(document.getElementById('replayChart'), [
+                { points: replayPts, color: pct >= 0 ? '#17D97A' : '#FF4B5C', width: 2 },
+              ], { gridLines: 3 });
+            }
+            document.getElementById('backToRealBtn').addEventListener('click', (e) => {
+              e.preventDefault();
+              resultEl.innerHTML = resultHTML();
+              if (correctionSetup) renderReplayChart(correctionSetup);
+            });
+          };
+
+          if (reduceMotion) { finish(); return; }
+
+          resultEl.innerHTML = `
+            <div class="sim-loading">
+              <div class="sim-bar"><div class="sim-bar-fill" id="practiceSimBarFill"></div></div>
+              <div class="sim-status mono" id="practiceSimStatus">replaying your changes…</div>
+            </div>`;
+          const bar = document.getElementById('practiceSimBarFill');
+          requestAnimationFrame(() => { bar.style.width = '100%'; });
+          setTimeout(finish, 900);
+        }
+
+        renderBrowser('');
+        renderPracticeHoldings();
+        renderFeedback();
+        renderUpdatedResult();
+        document.getElementById('searchBox').addEventListener('input', (e) => renderBrowser(e.target.value));
+
+        let modalMode = null, modalTicker = null;
+        function histPrice(t) { return MMMarket.getRealPriceOnDate(t, dates[0]); }
+        function openModal(mode, ticker) {
+          modalMode = mode; modalTicker = ticker;
+          document.getElementById('modalTitle').textContent = (mode === 'buy' ? 'Buy ' : 'Sell ') + label(ticker);
+          document.getElementById('modalSub').textContent = ticker;
+          document.getElementById('modalQty').value = 1;
+          document.getElementById('modalErr').textContent = '';
+          document.getElementById('modalNote').textContent = `Practice trades are priced as of ${dates[0]}, the start of this event, so we can show what would have happened if you'd held this stock through ${ev.short}. This never touches your real Portfolio account.`;
+          updateModalSummary();
+          document.getElementById('modalBackdrop').classList.add('show');
+          document.getElementById('modalQty').focus();
+        }
+        function closeModal() { document.getElementById('modalBackdrop').classList.remove('show'); modalMode = null; modalTicker = null; }
+        function updateModalSummary() {
+          const qty = Math.max(0, parseFloat(document.getElementById('modalQty').value) || 0);
+          const price = histPrice(modalTicker);
+          const total = qty * price;
+          const p = loadPractice();
+          let extra = '';
+          if (modalMode === 'buy') extra = `Practice balance after: ${fmt(p.cash - total)}`;
+          else extra = `You hold ${((p.holdings[modalTicker] || { shares: 0 }).shares).toFixed(2)} shares`;
+          document.getElementById('modalSummary').innerHTML = `Price (${dates[0]}): ${fmt(price)} · ${modalMode === 'buy' ? 'Cost' : 'Proceeds'}: <strong>${fmt(total)}</strong><br>${extra}`;
+        }
+        document.getElementById('modalQty').addEventListener('input', updateModalSummary);
+        document.getElementById('modalCancel').addEventListener('click', closeModal);
+        document.getElementById('modalBackdrop').addEventListener('click', (e) => { if (e.target.id === 'modalBackdrop') closeModal(); });
+        document.getElementById('modalConfirm').addEventListener('click', () => {
+          const qty = parseFloat(document.getElementById('modalQty').value);
+          const price = histPrice(modalTicker);
+          const errEl = document.getElementById('modalErr');
+          if (!qty || qty <= 0) { errEl.textContent = 'Enter a valid quantity.'; return; }
+          const p = loadPractice();
+          try {
+            if (modalMode === 'buy') {
+              const cost = qty * price;
+              if (cost > p.cash + 1e-6) throw new Error('Insufficient practice balance');
+              p.cash -= cost;
+              const h = p.holdings[modalTicker] || { shares: 0, avgPrice: 0 };
+              const ns = h.shares + qty;
+              h.avgPrice = (h.avgPrice * h.shares + price * qty) / ns;
+              h.shares = ns;
+              p.holdings[modalTicker] = h;
+            } else {
+              const h = p.holdings[modalTicker];
+              if (!h || h.shares < qty - 1e-9) throw new Error('Not enough practice shares');
+              h.shares -= qty;
+              if (h.shares <= 1e-9) delete p.holdings[modalTicker];
+              p.cash += qty * price;
+            }
+            p.trades = (p.trades || 0) + 1;
+            savePractice(p);
+            const toastMsg = (modalMode === 'buy' ? 'Bought ' : 'Sold ') + qty + ' ' + label(modalTicker);
+            closeModal();
+            renderPracticeHoldings();
+            renderFeedback();
+            renderUpdatedResult();
+            MMApp.toast(toastMsg);
+          } catch (e) { errEl.textContent = e.message; }
+        });
+        document.getElementById('browserList').addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-action="buy"]');
+          if (btn && !btn.disabled) openModal('buy', btn.dataset.ticker);
+        });
+        document.getElementById('practiceHoldingsList').addEventListener('click', (e) => {
+          const btn = e.target.closest('button[data-action="sell"]');
+          if (btn) openModal('sell', btn.dataset.ticker);
+        });
+        setInterval(() => renderBrowser(document.getElementById('searchBox').value), 6000);
+      }
+
+      function revealCauses() {
+        const sentences = CAUSES[id].split(/(?<=\.)\s+/);
+        document.getElementById('causesSentences').innerHTML = sentences.map((s) => `<p class="causes-sentence">${s}</p>`).join('');
+        document.getElementById('indicatorList').innerHTML = INDICATORS[id].map((s) => `<li>${s}</li>`).join('');
+        const sentenceEls = document.querySelectorAll('.causes-sentence');
+        const indicatorEls = document.querySelectorAll('.indicator-list li');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              sentenceEls.forEach((el, i) => setTimeout(() => el.classList.add('show'), i * 220));
+              indicatorEls.forEach((el, i) => setTimeout(() => el.classList.add('show'), sentenceEls.length * 220 + 200 + i * 160));
+              observer.disconnect();
+            }
+          });
+        }, { threshold: 0.2 });
+        observer.observe(document.getElementById('causesPanelWrap'));
+      }
+    });
+  })();
+  </script>
+</body>
+</html>

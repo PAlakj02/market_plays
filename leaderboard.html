@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Leaderboard · MarketMinds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <div class="ticker-wrap"><div class="ticker mono"></div></div>
+  <div class="ticker-note"></div>
+
+  <nav>
+    <a class="logo" href="index.html"><div class="logo-mark"><span>M</span></div>MarketMinds</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="crash-replay.html">Crash replay</a>
+      <a href="modules.html">Modules</a>
+      <a href="ml-lab.html">ML Lab</a>
+      <a href="leaderboard.html" class="active">Leaderboard</a>
+    </div>
+    <a class="nav-cta" href="portfolio.html">add a run</a>
+  </nav>
+
+  <section class="page" style="padding-top:36px;">
+    <div class="section-head">
+      <h2>Your leaderboard</h2>
+      <p class="lede">Ranking</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h3 id="countLabel">0 saved runs</h3>
+        <button class="btn-small" id="clearBtn">Clear all</button>
+      </div>
+      <div class="table-scroll">
+        <table class="data-table" id="lbTable"></table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>MarketMinds · simulated money, real history.</span>
+    <span>Not investment advice · Educational simulation only</span>
+  </footer>
+
+  <script src="assets/js/data.js?v=5"></script>
+  <script src="assets/js/portfolio.js?v=5"></script>
+  <script src="assets/js/app.js?v=5"></script>
+  <script src="assets/js/ticker.js?v=7"></script>
+  <script>
+  (function () {
+    function weightsLabel(w) {
+      const keys = Object.keys(w).filter(k => w[k] > 0);
+      return keys.map(k => `${Math.round(w[k]*100)}% ${(MMPortfolio.INSTRUMENT_LABELS[k]||k)}`).join(' + ') || 'all cash';
+    }
+    function render() {
+      const runs = MMApp.Storage.get('runs', []).slice().sort((a, b) => b.returnPct - a.returnPct);
+      document.getElementById('countLabel').textContent = runs.length + ' saved run' + (runs.length === 1 ? '' : 's');
+      const rows = runs.map((r, i) => {
+        const cls = r.returnPct >= 0 ? 'pos' : 'neg';
+        return `<tr>
+          <td>#${i+1}</td>
+          <td>${r.name}</td>
+          <td>${r.startDate}</td>
+          <td>${weightsLabel(r.weights)}</td>
+          <td class="${cls}">${MMApp.formatPct(r.returnPct)}</td>
+          <td>${r.maxDrawdownPct.toFixed(1)}%</td>
+          <td>${MMApp.formatINR(r.endValue)}</td>
+          <td>${new Date(r.timestamp).toLocaleDateString()}</td>
+        </tr>`;
+      }).join('');
+      document.getElementById('lbTable').innerHTML = `
+        <thead><tr><th>#</th><th>Name</th><th>Start</th><th>Allocation</th><th>Return</th><th>Max DD</th><th>End value</th><th>Saved</th></tr></thead>
+        <tbody>${rows}</tbody>`;
+    }
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (confirm('Clear all saved runs on this device?')) {
+        MMApp.Storage.set('runs', []);
+        render();
+      }
+    });
+    render();
+  })();
+  </script>
+</body>
+</html>

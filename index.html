@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketMinds · learn finance by living through the crash</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+
+  <div class="ticker-wrap"><div class="ticker mono"></div></div>
+  <div class="ticker-note"></div>
+
+  <nav>
+    <a class="logo" href="index.html"><div class="logo-mark"><span>M</span></div>MarketMinds</a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="crash-replay.html">Crash replay</a>
+      <a href="modules.html">Modules</a>
+      <a href="ml-lab.html">ML Lab</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    </div>
+    <a class="nav-cta" href="portfolio.html" id="navCashBadge">start · ₹1,00,000</a>
+  </nav>
+
+  <section class="hero">
+    <div class="eyebrow">25 years of real market data · 2000–2025</div>
+    <h1>Live through every crash<br>before you invest a <span class="hl">real rupee</span>.</h1>
+    <p>Fast-forward through 2008, COVID, demonetisation. Watch a real ₹1,00,000 portfolio move in real time, then see where our ML model got it wrong.</p>
+    <div class="hero-ctas">
+      <a class="order-btn buy" href="portfolio.html">
+        <span class="corner-bl"></span><span class="corner-br"></span>
+        <span class="tick">▲</span> Launch simulator <span class="sub">/ buy-in</span>
+      </a>
+      <a class="order-btn watch" href="crash-replay.html">
+        <span class="corner-bl"></span><span class="corner-br"></span>
+        <span class="tick">◐</span> Watch the 2020 crash <span class="sub">/ 01:42</span>
+      </a>
+    </div>
+
+    <div class="counter-card" id="counterCard">
+      <div class="counter-item">
+        <div class="label">Your portfolio</div>
+        <div class="value up" id="cardPortfolioVal">₹1,38,240</div>
+        <div class="delta" id="cardPortfolioDelta">▲ 38.2% since 2000</div>
+      </div>
+      <div class="counter-item">
+        <div class="label">Current event</div>
+        <div class="value" style="color:var(--red)">COVID crash</div>
+        <div class="delta" style="color:var(--red)">▼ 38% · Mar 2020</div>
+      </div>
+      <div class="counter-item">
+        <div class="label">ML forecast error</div>
+        <div class="value" style="color:var(--violet)">± 6.4%</div>
+        <div class="delta" style="color:var(--text-muted)">honestly reported</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>See your money the way the market sees it.</h2>
+    </div>
+    <div class="heatmap">
+      <div class="tile g4"><span class="name">IT</span><span class="pct">+4.2%</span></div>
+      <div class="tile g3"><span class="name">BANKING</span><span class="pct">+2.1%</span></div>
+      <div class="tile g2"><span class="name">FMCG</span><span class="pct">+0.8%</span></div>
+      <div class="tile r2"><span class="name">AUTO</span><span class="pct">−1.3%</span></div>
+      <div class="tile r3"><span class="name">METAL</span><span class="pct">−2.6%</span></div>
+      <div class="tile g4"><span class="name">GOLD</span><span class="pct">+3.9%</span></div>
+      <div class="tile g2"><span class="name">PHARMA</span><span class="pct">+0.6%</span></div>
+      <div class="tile r4"><span class="name">REALTY</span><span class="pct">−5.8%</span></div>
+      <div class="tile g1"><span class="name">ENERGY</span><span class="pct">+0.2%</span></div>
+      <div class="tile r1"><span class="name">TELECOM</span><span class="pct">−0.4%</span></div>
+      <div class="tile g3"><span class="name">CONSUMER</span><span class="pct">+1.9%</span></div>
+      <div class="tile r2"><span class="name">MEDIA</span><span class="pct">−1.1%</span></div>
+    </div>
+    <p class="note" style="margin-top:10px;">Illustrative sector snapshot (design reference values, not a live per-sector feed).</p>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="section-head">
+      <h2>Every one of these events is real. The daily path between them is reconstructed.</h2>
+      <p class="lede">Anchored to publicly reported Sensex/gold milestones. This is a teaching simulation, not a live market feed.</p>
+    </div>
+    <div class="chart-area" style="height:260px;">
+      <canvas id="heroChart"></canvas>
+    </div>
+    <div class="legend">
+      <span><span class="dot" style="background:#17D97A"></span>Broad equity index (reconstructed)</span>
+      <span><span class="dot" style="background:#F0B742"></span>Gold ₹/10g (reconstructed)</span>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="row">
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Crash replay: COVID-19, Feb–Apr 2020</h3>
+          <span class="badge crash">−38% event</span>
+        </div>
+        <div class="chart-area short"><canvas id="miniCrashChart"></canvas></div>
+        <div class="legend">
+          <span><span class="dot" style="background:#FF4B5C"></span>Actual Sensex</span>
+          <span><span class="dot" style="background:#8B7CF6"></span>Illustrative model miss*</span>
+        </div>
+        <div class="timeline-scrub"><div class="fill" style="width:38%"></div><div class="handle" style="left:38%"></div></div>
+        <div class="scrub-labels"><span>2000</span><span>2008</span><span>2016</span><span>2020 ●</span><span>2025</span></div>
+        <p class="note" style="margin-top:10px;">*A 5-day-lagged view of the real actual line, calibrated to the real MAE reported alongside, not literal day-by-day model output. Full breakdown on <a href="crash-replay.html" style="color:var(--gold); text-decoration:underline;">crash replay</a>.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h3>Where the model was wrong</h3>
+          <span class="badge ml">honest reporting</span>
+        </div>
+        <p style="font-size:13px; color:var(--text-secondary); line-height:1.7;">
+          Random Forest and XGBoost's directional accuracy, which beats chance in calm 2017 conditions, flips to <strong style="color:var(--text-primary);">significantly worse than random</strong> during COVID (p &lt; 0.01). A real result from this project's own evaluation, shown here rather than hidden.
+        </p>
+        <div style="margin-top:18px; display:flex; flex-direction:column; gap:10px;" id="miniMlRows"></div>
+        <a class="btn-secondary" href="ml-lab.html" style="display:inline-block; margin-top:16px;">Open ML Lab →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="section-head">
+      <h2>Learn finance the way it actually happened.</h2>
+    </div>
+    <div class="modules" id="moduleGrid"></div>
+  </section>
+
+  <footer>
+    <span>MarketMinds · simulated money, real history.</span>
+    <span>Not investment advice · Educational simulation only</span>
+  </footer>
+
+  <script src="assets/js/data.js?v=5"></script>
+  <script src="assets/js/portfolio.js?v=5"></script>
+  <script src="assets/js/app.js?v=5"></script>
+  <script src="assets/js/ticker.js?v=7"></script>
+  <script src="assets/js/account.js"></script>
+  <script>
+    document.querySelector('.nav-links a[href="index.html"]');
+    (function(){
+      const dates = MM.INDEX_DATES;
+      const step = Math.max(1, Math.floor(dates.length / 900));
+      const idx0 = MM.getIndexValue(dates[0]), gold0 = MM.getGoldValue(dates[0]);
+      const idxPts = [], goldPts = [];
+      for (let i = 0; i < dates.length; i += step) {
+        idxPts.push({ x: i, y: (MM.getIndexValue(dates[i]) / idx0 - 1) * 100 });
+        goldPts.push({ x: i, y: (MM.getGoldValue(dates[i]) / gold0 - 1) * 100 });
+      }
+      const shaded = MM.EVENTS.filter(e => e.badge === 'crash').map(e => ({
+        x0: dates.indexOf(MM.nearestTradingDate(e.start)) , x1: dates.indexOf(MM.nearestTradingDate(e.end)),
+        color: 'rgba(255,75,92,0.07)'
+      }));
+      const canvas = document.getElementById('heroChart');
+      function render(){ MMApp.drawLineChart(canvas, [
+        { points: idxPts, color: '#17D97A', width: 2 },
+        { points: goldPts, color: '#F0B742', width: 1.6, dash: [4,3] },
+      ], { shadedRanges: shaded, gridLines: 4 }); }
+      render();
+      window.addEventListener('resize', render);
+
+      const covidDates = MMPortfolio.tradingDatesBetween('2020-01-14', '2020-03-23');
+      const actualPts = covidDates.map((d, i) => ({ x: i, y: MM.getIndexValue(d) }));
+      const lagPts = covidDates.map((d, i) => {
+        const lagIdx = Math.max(0, i - 5);
+        return { x: i, y: MM.getIndexValue(covidDates[lagIdx]) };
+      });
+      MMApp.drawLineChart(document.getElementById('miniCrashChart'), [
+        { points: actualPts, color: '#FF4B5C', width: 2.2 },
+        { points: lagPts, color: '#8B7CF6', width: 1.8, dash: [4, 3] },
+      ], { gridLines: 3 });
+
+      const covid = MM.ML_METRICS.bsesn.covid2020;
+      const order = ['xgboost', 'random_forest', 'linear_regression', 'arima'];
+      const tierColor = ['var(--red)', 'var(--gold)', 'var(--text-secondary)', 'var(--green)'];
+      const mlRowsHtml = order.map((k, i) => {
+        return `<div style="display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:12.5px;">
+          <span style="color:var(--text-muted)">${MM.MODEL_NAMES[k]}</span><span style="color:${tierColor[i]}">±${covid[k].mae_pct}% error</span>
+        </div>`;
+      }).join('');
+      document.getElementById('miniMlRows').innerHTML = mlRowsHtml;
+
+      const grid = document.getElementById('moduleGrid');
+      grid.innerHTML = MM.EVENTS.slice().sort((a,b)=>a.moduleNum-b.moduleNum).map(ev => {
+        const cls = ev.realReturnPct >= 0 ? 'up' : 'down';
+        return `<a class="module-card" href="modules.html#${ev.id}">
+          <div class="module-num">MOD ${String(ev.moduleNum).padStart(2,'0')}</div>
+          <h4>${ev.title}</h4>
+          <p>${ev.short}</p>
+          <div class="module-return ${cls}">${MMApp.formatPct(ev.realReturnPct)} over the event window</div>
+        </a>`;
+      }).join('');
+
+      const runs = MMApp.Storage.get('runs', []);
+      if (runs.length) {
+        const last = runs[runs.length - 1];
+        const cls = last.returnPct >= 0 ? 'up' : 'down';
+        document.getElementById('cardPortfolioVal').textContent = MMApp.formatINR(last.endValue);
+        document.getElementById('cardPortfolioVal').className = 'value ' + cls;
+        document.getElementById('cardPortfolioDelta').textContent = MMApp.formatPct(last.returnPct) + ' · last simulator run';
+      }
+
+      const acc = MMAccount.load();
+      document.getElementById('navCashBadge').textContent = MMApp.formatINR(acc.cash) + ' tokens';
+    })();
+  </script>
+</body>
+</html>
