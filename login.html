@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sign in · MarketMinds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .auth-wrap{ max-width:400px; margin:64px auto; padding:0 20px; }
+  .auth-card{ background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius-lg); padding:28px; }
+  .auth-card h1{ font-family:'Space Grotesk',sans-serif; font-size:22px; margin-bottom:6px; }
+  .auth-card p.sub{ color:var(--text-secondary); font-size:13.5px; margin-bottom:22px; }
+  .field{ margin-bottom:14px; }
+  .field label{ display:block; font-size:12px; color:var(--text-secondary); margin-bottom:6px; }
+  .field input{
+    width:100%; background:var(--bg-raised); border:1px solid var(--card-border); border-radius:var(--radius-sm);
+    padding:11px 12px; color:var(--text-primary); font-family:'Inter',sans-serif; font-size:14px;
+  }
+  .field input:focus{ outline:none; border-color:var(--green); }
+  .auth-submit{ width:100%; margin-top:6px; cursor:pointer; }
+  .auth-error{ display:none; background:rgba(255,75,92,0.08); border:1px solid rgba(255,75,92,0.3); color:var(--red);
+    border-radius:var(--radius-sm); padding:10px 12px; font-size:13px; margin-bottom:14px; }
+  .auth-error.show{ display:block; }
+  .auth-success{ display:none; background:rgba(23,217,122,0.08); border:1px solid rgba(23,217,122,0.3); color:var(--green);
+    border-radius:var(--radius-sm); padding:10px 12px; font-size:13px; margin-bottom:14px; }
+  .auth-success.show{ display:block; }
+  .forgot-link{ display:block; text-align:right; font-size:12px; color:var(--text-secondary); margin:-6px 0 14px; cursor:pointer; text-decoration:underline; }
+  .auth-divider{ display:flex; align-items:center; gap:10px; margin:18px 0; color:var(--text-muted); font-size:12px; }
+  .auth-divider::before, .auth-divider::after{ content:''; flex:1; height:1px; background:var(--card-border); }
+  .auth-google{ width:100%; cursor:pointer; }
+  .auth-toggle{ text-align:center; margin-top:18px; font-size:13px; color:var(--text-secondary); }
+  .auth-toggle a{ color:var(--green); cursor:pointer; text-decoration:underline; }
+</style>
+</head>
+<body>
+
+  <nav>
+    <a class="logo" href="index.html"><div class="logo-mark"><span>M</span></div>MarketMinds</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="crash-replay.html">Crash replay</a>
+      <a href="modules.html">Modules</a>
+      <a href="ml-lab.html">ML Lab</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    </div>
+  </nav>
+
+  <div class="auth-wrap">
+    <div class="auth-card">
+      <h1 id="authTitle">Sign in</h1>
+      <p class="sub" id="authSubtitle">Welcome back — your token portfolio is waiting.</p>
+
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-success" id="authSuccess"></div>
+
+      <form id="authForm">
+        <div class="field" id="nameField" style="display:none;">
+          <label for="displayName">Name</label>
+          <input type="text" id="displayName" autocomplete="name" placeholder="What should we call you?">
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input type="email" id="email" autocomplete="email" required placeholder="you@example.com">
+        </div>
+        <div class="field" id="passwordField">
+          <label for="password">Password</label>
+          <input type="password" id="password" autocomplete="current-password" placeholder="At least 6 characters">
+        </div>
+        <a class="forgot-link" id="forgotLink">Forgot password?</a>
+        <button type="submit" class="btn-primary auth-submit" id="authSubmit">Sign in</button>
+      </form>
+
+      <div class="auth-divider" id="authDivider">or</div>
+      <button type="button" class="btn-secondary auth-google" id="googleSignIn">Continue with Google</button>
+
+      <div class="auth-toggle">
+        <span id="toggleText">New here?</span> <a id="toggleLink">Create an account</a>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="assets/js/firebase-config.js"></script>
+  <script type="module" src="assets/js/auth.js"></script>
+  <script type="module">
+    function waitForMMAuth() {
+      return new Promise((resolve) => {
+        (function check() {
+          if (window.MMAuth) resolve(window.MMAuth);
+          else setTimeout(check, 20);
+        })();
+      });
+    }
+
+    const params = new URLSearchParams(window.location.search);
+    const returnTo = params.get('return') || 'portfolio.html';
+
+    let mode = 'signin'; // 'signin' | 'signup' | 'reset'
+    let modeBeforeReset = 'signin'; // so "back to sign in" restores signup if that's where we came from
+
+    const title = document.getElementById('authTitle');
+    const subtitle = document.getElementById('authSubtitle');
+    const nameField = document.getElementById('nameField');
+    const passwordField = document.getElementById('passwordField');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('authSubmit');
+    const toggleText = document.getElementById('toggleText');
+    const toggleLink = document.getElementById('toggleLink');
+    const forgotLink = document.getElementById('forgotLink');
+    const authDivider = document.getElementById('authDivider');
+    const googleBtn = document.getElementById('googleSignIn');
+    const errorBox = document.getElementById('authError');
+    const successBox = document.getElementById('authSuccess');
+    const form = document.getElementById('authForm');
+
+    function clearMessages() {
+      errorBox.classList.remove('show');
+      successBox.classList.remove('show');
+    }
+
+    function setMode(next) {
+      if (mode !== 'reset') modeBeforeReset = mode;
+      mode = next;
+      clearMessages();
+
+      if (mode === 'signup') {
+        title.textContent = 'Create your account';
+        subtitle.textContent = 'Start with ₹1,00,000 in token money — no real cash, ever.';
+        nameField.style.display = '';
+        passwordField.style.display = '';
+        passwordInput.required = true;
+        forgotLink.style.display = 'none';
+        authDivider.style.display = '';
+        googleBtn.style.display = '';
+        submitBtn.textContent = 'Create account';
+        toggleText.textContent = 'Already have an account?';
+        toggleLink.textContent = 'Sign in';
+      } else if (mode === 'reset') {
+        title.textContent = 'Reset your password';
+        subtitle.textContent = 'Enter your email and we’ll send you a reset link.';
+        nameField.style.display = 'none';
+        passwordField.style.display = 'none';
+        passwordInput.required = false;
+        forgotLink.style.display = 'none';
+        authDivider.style.display = 'none';
+        googleBtn.style.display = 'none';
+        submitBtn.textContent = 'Send reset link';
+        toggleText.textContent = 'Remembered it?';
+        toggleLink.textContent = 'Sign in';
+      } else {
+        title.textContent = 'Sign in';
+        subtitle.textContent = 'Welcome back — your token portfolio is waiting.';
+        nameField.style.display = 'none';
+        passwordField.style.display = '';
+        passwordInput.required = true;
+        forgotLink.style.display = '';
+        authDivider.style.display = '';
+        googleBtn.style.display = '';
+        submitBtn.textContent = 'Sign in';
+        toggleText.textContent = 'New here?';
+        toggleLink.textContent = 'Create an account';
+      }
+    }
+
+    toggleLink.addEventListener('click', () => {
+      if (mode === 'reset') setMode(modeBeforeReset === 'signup' ? 'signup' : 'signin');
+      else setMode(mode === 'signin' ? 'signup' : 'signin');
+    });
+    forgotLink.addEventListener('click', () => setMode('reset'));
+
+    function showError(err, MMAuth) {
+      successBox.classList.remove('show');
+      errorBox.textContent = MMAuth.friendlyAuthError(err);
+      errorBox.classList.add('show');
+    }
+
+    waitForMMAuth().then((MMAuth) => {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        clearMessages();
+        const email = document.getElementById('email').value.trim();
+        submitBtn.disabled = true;
+        try {
+          if (mode === 'reset') {
+            await MMAuth.sendPasswordReset(email);
+            successBox.textContent = 'Reset link sent — check your inbox (and spam folder).';
+            successBox.classList.add('show');
+          } else if (mode === 'signup') {
+            const name = document.getElementById('displayName').value.trim();
+            const password = passwordInput.value;
+            await MMAuth.signUpWithEmail(email, password, name);
+            window.location.href = returnTo;
+          } else {
+            const password = passwordInput.value;
+            await MMAuth.signInWithEmail(email, password);
+            window.location.href = returnTo;
+          }
+        } catch (err) {
+          showError(err, MMAuth);
+        } finally {
+          submitBtn.disabled = false;
+        }
+      });
+
+      googleBtn.addEventListener('click', async () => {
+        try {
+          await MMAuth.signInWithGoogle();
+          window.location.href = returnTo;
+        } catch (err) {
+          showError(err, MMAuth);
+        }
+      });
+
+      // Already signed in? Skip straight through -- unless we're actively resetting a password,
+      // which needs to stay usable while signed in too.
+      MMAuth.onAuthChange((user) => {
+        if (user && mode !== 'reset') window.location.href = returnTo;
+      });
+    });
+  </script>
+</body>
+</html>
