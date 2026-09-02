@@ -1,0 +1,28 @@
+{
+  "asset": "RELIANCE.NS",
+  "model_type": "lstm",
+  "window": "bullrun",
+  "train_end": "2003-03-31",
+  "test_start": "2003-04-01",
+  "test_end": "2008-01-08",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 4.7,
+  "epochs_trained": 11,
+  "best_val_loss": 0.002211,
+  "metrics": {
+    "mae_pct": 5.659,
+    "rmse_pct": 12.406,
+    "directional_accuracy_pct": 49.1,
+    "dir_acc_ci_low": 46.3,
+    "dir_acc_ci_high": 51.9,
+    "p_value_vs_random": 0.5331,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 1246
+  },
+  "date_trained": "2026-09-02T11:34:56.822071"
+}

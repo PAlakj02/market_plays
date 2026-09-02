@@ -24,10 +24,10 @@ models/*.pt
 models/*.joblib
 !models/.gitkeep
 
-# Next.js
-app/.next/
-app/node_modules/
-app/.env*.local
+# app/ is Devyani's separate, live GitHub repo (Market-Minds), cloned in-place -- it has
+# its own .git and is pushed to independently. Fully ignored here so this outer repo never
+# tries to track its contents.
+app/
 
 # Ad-hoc debugging screenshots (image.png, image2.png, ... pasted into chat while debugging)
 notebooks/image*.png

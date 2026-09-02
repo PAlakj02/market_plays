@@ -1,0 +1,28 @@
+{
+  "asset": "NESTLEIND.NS",
+  "model_type": "lstm",
+  "window": "normal",
+  "train_end": "2016-12-31",
+  "test_start": "2017-01-01",
+  "test_end": "2017-12-31",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 1.6,
+  "epochs_trained": 17,
+  "best_val_loss": 0.001407,
+  "metrics": {
+    "mae_pct": 1.952,
+    "rmse_pct": 2.63,
+    "directional_accuracy_pct": 46.5,
+    "dir_acc_ci_low": 40.6,
+    "dir_acc_ci_high": 52.6,
+    "p_value_vs_random": 0.2643,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 260
+  },
+  "date_trained": "2026-09-02T11:31:54.373356"
+}

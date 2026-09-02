@@ -1,0 +1,28 @@
+{
+  "asset": "DRREDDY.NS",
+  "model_type": "lstm",
+  "window": "recovery0910",
+  "train_end": "2009-03-08",
+  "test_start": "2009-03-09",
+  "test_end": "2010-11-05",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 2.1,
+  "epochs_trained": 21,
+  "best_val_loss": 0.002939,
+  "metrics": {
+    "mae_pct": 9.678,
+    "rmse_pct": 11.051,
+    "directional_accuracy_pct": 36.3,
+    "dir_acc_ci_low": 31.9,
+    "dir_acc_ci_high": 40.9,
+    "p_value_vs_random": 0.0,
+    "significant_vs_random": true,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": true,
+    "n_predictions": 435
+  },
+  "date_trained": "2026-09-02T11:27:40.189082"
+}

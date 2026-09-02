@@ -1,0 +1,28 @@
+{
+  "asset": "ONGC.NS",
+  "model_type": "lstm",
+  "window": "recovery0910",
+  "train_end": "2009-03-08",
+  "test_start": "2009-03-09",
+  "test_end": "2010-11-05",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 0.5,
+  "epochs_trained": 9,
+  "best_val_loss": 0.005228,
+  "metrics": {
+    "mae_pct": 3.584,
+    "rmse_pct": 4.902,
+    "directional_accuracy_pct": 49.7,
+    "dir_acc_ci_low": 45.0,
+    "dir_acc_ci_high": 54.3,
+    "p_value_vs_random": 0.8856,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 435
+  },
+  "date_trained": "2026-09-02T11:33:50.120610"
+}

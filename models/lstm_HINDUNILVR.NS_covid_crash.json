@@ -1,0 +1,28 @@
+{
+  "asset": "HINDUNILVR.NS",
+  "model_type": "lstm",
+  "window": "covid_crash",
+  "train_end": "2019-12-31",
+  "test_start": "2020-02-20",
+  "test_end": "2020-04-30",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 0.7,
+  "epochs_trained": 6,
+  "best_val_loss": 0.002571,
+  "metrics": {
+    "mae_pct": 5.59,
+    "rmse_pct": 7.495,
+    "directional_accuracy_pct": 68.6,
+    "dir_acc_ci_low": 55.0,
+    "dir_acc_ci_high": 79.7,
+    "p_value_vs_random": 0.0078,
+    "significant_vs_random": true,
+    "significant_better_than_random": true,
+    "significant_worse_than_random": false,
+    "n_predictions": 51
+  },
+  "date_trained": "2026-09-02T11:30:35.717057"
+}

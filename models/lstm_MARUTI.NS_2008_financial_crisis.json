@@ -1,0 +1,28 @@
+{
+  "asset": "MARUTI.NS",
+  "model_type": "lstm",
+  "window": "2008_financial_crisis",
+  "train_end": "2007-12-31",
+  "test_start": "2008-01-01",
+  "test_end": "2009-03-31",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 0.2,
+  "epochs_trained": 8,
+  "best_val_loss": 0.003009,
+  "metrics": {
+    "mae_pct": 5.76,
+    "rmse_pct": 7.21,
+    "directional_accuracy_pct": 55.8,
+    "dir_acc_ci_low": 50.4,
+    "dir_acc_ci_high": 61.1,
+    "p_value_vs_random": 0.0353,
+    "significant_vs_random": true,
+    "significant_better_than_random": true,
+    "significant_worse_than_random": false,
+    "n_predictions": 326
+  },
+  "date_trained": "2026-09-02T11:31:42.645961"
+}

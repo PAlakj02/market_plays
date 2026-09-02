@@ -1,0 +1,28 @@
+{
+  "asset": "ULTRACEMCO.NS",
+  "model_type": "lstm",
+  "window": "postcovid",
+  "train_end": "2020-03-22",
+  "test_start": "2020-03-23",
+  "test_end": "2021-10-18",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 1.6,
+  "epochs_trained": 9,
+  "best_val_loss": 0.001766,
+  "metrics": {
+    "mae_pct": 4.071,
+    "rmse_pct": 5.05,
+    "directional_accuracy_pct": 45.3,
+    "dir_acc_ci_low": 40.5,
+    "dir_acc_ci_high": 50.1,
+    "p_value_vs_random": 0.0544,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 411
+  },
+  "date_trained": "2026-09-02T11:38:22.941879"
+}

@@ -1,0 +1,28 @@
+{
+  "asset": "KOTAKBANK.NS",
+  "model_type": "lstm",
+  "window": "recovery0910",
+  "train_end": "2009-03-08",
+  "test_start": "2009-03-09",
+  "test_end": "2010-11-05",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 0.3,
+  "epochs_trained": 6,
+  "best_val_loss": 0.020263,
+  "metrics": {
+    "mae_pct": 4.733,
+    "rmse_pct": 6.904,
+    "directional_accuracy_pct": 56.8,
+    "dir_acc_ci_low": 52.1,
+    "dir_acc_ci_high": 61.4,
+    "p_value_vs_random": 0.0047,
+    "significant_vs_random": true,
+    "significant_better_than_random": true,
+    "significant_worse_than_random": false,
+    "n_predictions": 435
+  },
+  "date_trained": "2026-09-02T11:32:08.568107"
+}

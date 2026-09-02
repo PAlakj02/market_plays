@@ -1,0 +1,28 @@
+{
+  "asset": "MARUTI.NS",
+  "model_type": "lstm",
+  "window": "correction2425",
+  "train_end": "2024-09-26",
+  "test_start": "2024-09-27",
+  "test_end": "2025-02-01",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 1.6,
+  "epochs_trained": 12,
+  "best_val_loss": 0.001231,
+  "metrics": {
+    "mae_pct": 3.022,
+    "rmse_pct": 4.015,
+    "directional_accuracy_pct": 58.2,
+    "dir_acc_ci_low": 48.0,
+    "dir_acc_ci_high": 67.8,
+    "p_value_vs_random": 0.1159,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 91
+  },
+  "date_trained": "2026-09-02T11:33:03.846344"
+}

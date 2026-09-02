@@ -1,0 +1,762 @@
+[
+  {
+    "asset": "DRREDDY.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "DRREDDY.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "HDFCBANK.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "HDFCBANK.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "HINDUNILVR.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "HINDUNILVR.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ICICIBANK.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "ICICIBANK.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "INFY.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "INFY.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ITC.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "ITC.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "KOTAKBANK.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "KOTAKBANK.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "LT.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "LT.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "MARUTI.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "MARUTI.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "NESTLEIND.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "NESTLEIND.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ONGC.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "ONGC.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "RELIANCE.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "RELIANCE.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "SUNPHARMA.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "SUNPHARMA.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "TATASTEEL.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "TATASTEEL.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "TCS.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "TCS.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ULTRACEMCO.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "ULTRACEMCO.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "WIPRO.NS",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "WIPRO.NS_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "^BSESN",
+    "window": "2008_financial_crisis",
+    "window_label": "2008 Financial Crisis",
+    "file": "IDX_BSESN_2008_financial_crisis.json",
+    "start_date": "2008-01-08",
+    "end_date": "2009-04-07",
+    "models": [
+      "arima",
+      "linear_regression",
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "DRREDDY.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "DRREDDY.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "GOLDBEES.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "GOLDBEES.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "HDFCBANK.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "HDFCBANK.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "HINDUNILVR.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "HINDUNILVR.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ICICIBANK.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "ICICIBANK.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "INFY.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "INFY.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ITC.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "ITC.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "KOTAKBANK.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "KOTAKBANK.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "LT.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "LT.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "MARUTI.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "MARUTI.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "NESTLEIND.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "NESTLEIND.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ONGC.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "ONGC.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "RELIANCE.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "RELIANCE.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "SUNPHARMA.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "SUNPHARMA.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "TATASTEEL.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "TATASTEEL.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "TCS.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "TCS.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ULTRACEMCO.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "ULTRACEMCO.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "WIPRO.NS",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "WIPRO.NS_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "^BSESN",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "IDX_BSESN_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "arima",
+      "linear_regression",
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "^NSEI",
+    "window": "covid_crash",
+    "window_label": "COVID-19 Crash",
+    "file": "IDX_NSEI_covid_crash.json",
+    "start_date": "2020-02-27",
+    "end_date": "2020-05-07",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "DRREDDY.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "DRREDDY.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "GOLDBEES.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "GOLDBEES.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "HDFCBANK.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "HDFCBANK.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "HINDUNILVR.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "HINDUNILVR.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ICICIBANK.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "ICICIBANK.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "INFY.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "INFY.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ITC.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "ITC.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "KOTAKBANK.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "KOTAKBANK.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "LT.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "LT.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "MARUTI.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "MARUTI.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "NESTLEIND.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "NESTLEIND.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ONGC.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "ONGC.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "RELIANCE.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "RELIANCE.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "SUNPHARMA.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "SUNPHARMA.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "TATASTEEL.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "TATASTEEL.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "TCS.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "TCS.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "ULTRACEMCO.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "ULTRACEMCO.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "WIPRO.NS",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "WIPRO.NS_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "^BSESN",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "IDX_BSESN_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "arima",
+      "linear_regression",
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  },
+  {
+    "asset": "^NSEI",
+    "window": "normal",
+    "window_label": "Normal Market (2017)",
+    "file": "IDX_NSEI_normal.json",
+    "start_date": "2017-01-09",
+    "end_date": "2018-01-05",
+    "models": [
+      "lstm",
+      "random_forest",
+      "xgboost"
+    ]
+  }
+]

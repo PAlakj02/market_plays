@@ -1,0 +1,28 @@
+{
+  "asset": "WIPRO.NS",
+  "model_type": "lstm",
+  "window": "demon2016",
+  "train_end": "2016-11-07",
+  "test_start": "2016-11-08",
+  "test_end": "2016-12-26",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 3.8,
+  "epochs_trained": 18,
+  "best_val_loss": 0.000798,
+  "metrics": {
+    "mae_pct": 1.777,
+    "rmse_pct": 2.131,
+    "directional_accuracy_pct": 51.4,
+    "dir_acc_ci_low": 35.6,
+    "dir_acc_ci_high": 67.0,
+    "p_value_vs_random": 0.8658,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 35
+  },
+  "date_trained": "2026-09-02T11:39:13.798884"
+}

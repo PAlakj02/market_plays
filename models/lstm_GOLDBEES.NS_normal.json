@@ -1,0 +1,28 @@
+{
+  "asset": "GOLDBEES.NS",
+  "model_type": "lstm",
+  "window": "normal",
+  "train_end": "2016-12-31",
+  "test_start": "2017-01-01",
+  "test_end": "2017-12-31",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 0.3,
+  "epochs_trained": 6,
+  "best_val_loss": 0.000293,
+  "metrics": {
+    "mae_pct": 1.144,
+    "rmse_pct": 1.402,
+    "directional_accuracy_pct": 48.8,
+    "dir_acc_ci_low": 42.8,
+    "dir_acc_ci_high": 54.9,
+    "p_value_vs_random": 0.7098,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 260
+  },
+  "date_trained": "2026-09-02T11:29:58.657433"
+}

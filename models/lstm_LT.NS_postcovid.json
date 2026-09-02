@@ -1,0 +1,28 @@
+{
+  "asset": "LT.NS",
+  "model_type": "lstm",
+  "window": "postcovid",
+  "train_end": "2020-03-22",
+  "test_start": "2020-03-23",
+  "test_end": "2021-10-18",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 0.6,
+  "epochs_trained": 6,
+  "best_val_loss": 0.001761,
+  "metrics": {
+    "mae_pct": 3.472,
+    "rmse_pct": 4.528,
+    "directional_accuracy_pct": 42.8,
+    "dir_acc_ci_low": 38.1,
+    "dir_acc_ci_high": 47.7,
+    "p_value_vs_random": 0.0036,
+    "significant_vs_random": true,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": true,
+    "n_predictions": 411
+  },
+  "date_trained": "2026-09-02T11:32:37.812466"
+}

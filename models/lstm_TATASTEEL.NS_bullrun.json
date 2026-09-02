@@ -1,0 +1,28 @@
+{
+  "asset": "TATASTEEL.NS",
+  "model_type": "lstm",
+  "window": "bullrun",
+  "train_end": "2003-03-31",
+  "test_start": "2003-04-01",
+  "test_end": "2008-01-08",
+  "seq_len": 30,
+  "hidden_size": 32,
+  "num_layers": 1,
+  "cell_type": "lstm",
+  "training_time_seconds": 4.7,
+  "epochs_trained": 6,
+  "best_val_loss": 0.002558,
+  "metrics": {
+    "mae_pct": 8.03,
+    "rmse_pct": 35.575,
+    "directional_accuracy_pct": 48.9,
+    "dir_acc_ci_low": 46.1,
+    "dir_acc_ci_high": 51.7,
+    "p_value_vs_random": 0.4276,
+    "significant_vs_random": false,
+    "significant_better_than_random": false,
+    "significant_worse_than_random": false,
+    "n_predictions": 1246
+  },
+  "date_trained": "2026-09-02T11:37:11.747236"
+}
