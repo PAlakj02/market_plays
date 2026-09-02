@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curriculum · MarketMinds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .lesson{ scroll-margin-top: 90px; }
+  .lesson-grid{ display:grid; grid-template-columns: 44px 1fr; gap:16px; }
+  .lesson-num{ font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:13px; padding-top:4px; }
+  .lesson h3{ font-size:20px; margin-bottom:4px; }
+  .lesson .meta{ font-size:12.5px; color:var(--text-muted); margin-bottom:14px; font-family:'IBM Plex Mono',monospace; }
+  .lesson p{ font-size:14px; color:var(--text-secondary); line-height:1.7; margin-bottom:10px; max-width:760px; }
+  .lesson p strong{ color:var(--text-primary); }
+  .jumpnav{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:20px; }
+
+  .basics-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:18px 0 28px; }
+  .basic-card{ background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:16px; }
+  .basic-card .n{ font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:11px; margin-bottom:6px; }
+  .basic-card h4{ font-size:13.5px; margin-bottom:6px; }
+  .basic-card p{ font-size:12px; color:var(--text-secondary); line-height:1.6; }
+
+  .quiz-q{ background:var(--bg-raised); border:1px solid var(--card-border); border-radius:10px; padding:16px; margin-bottom:12px; }
+  .quiz-q .qtext{ font-size:13.5px; margin-bottom:10px; }
+  .quiz-q label{ display:flex; align-items:center; gap:8px; font-size:13px; color:var(--text-secondary); padding:5px 0; cursor:pointer; }
+  .quiz-q label:hover{ color:var(--text-primary); }
+  .quiz-q input[type="radio"]{ accent-color:var(--green); }
+  .quiz-q.wrong{ border-color:var(--red-dim); }
+  .quiz-q.right{ border-color:var(--green-dim); }
+  .quiz-result{ font-family:'IBM Plex Mono',monospace; font-size:13px; margin:14px 0; padding:12px 14px; border-radius:8px; }
+  .quiz-result.pass{ background:rgba(23,217,122,0.1); color:var(--green); border:1px solid rgba(23,217,122,0.3); }
+  .quiz-result.fail{ background:rgba(255,75,92,0.1); color:var(--red); border:1px solid rgba(255,75,92,0.3); }
+
+  .locked-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .locked-card{ background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:18px; opacity:0.5; text-align:center; }
+  .locked-card .lock{ font-size:20px; margin-bottom:8px; }
+  .locked-card h4{ font-size:13px; }
+  #modulesLockedBanner{ text-align:center; padding:14px; margin-bottom:20px; color:var(--text-muted); font-size:13px; background:var(--bg-raised); border:1px solid var(--card-border); border-radius:10px; }
+
+  .module-interactive{ margin-top:18px; padding-top:18px; border-top:1px solid var(--card-border); }
+  .empty-holdings{ background:var(--bg-raised); border:1px solid var(--card-border); border-radius:10px; padding:16px; font-size:13px; color:var(--text-muted); }
+  .empty-holdings a{ color:var(--gold); text-decoration:underline; }
+  .excluded-note{ font-size:11.5px; color:var(--text-muted); margin-top:8px; }
+  .diag-row{ display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:12.5px; padding:5px 0; }
+  @media (max-width:980px){ .basics-grid{ grid-template-columns:1fr 1fr; } .locked-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:560px){ .basics-grid{ grid-template-columns:1fr; } .locked-grid{ grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+  <div class="ticker-wrap"><div class="ticker mono"></div></div>
+  <div class="ticker-note"></div>
+
+  <nav>
+    <a class="logo" href="index.html"><div class="logo-mark"><span>M</span></div>MarketMinds</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="crash-replay.html">Crash replay</a>
+      <a href="modules.html" class="active">Modules</a>
+      <a href="ml-lab.html">ML Lab</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    </div>
+    <a class="nav-cta" href="portfolio.html">try it yourself</a>
+  </nav>
+
+  <section class="page" style="padding-top:36px;">
+    <div class="section-head">
+      <h2>Learn the vocabulary. Then live through the history.</h2>
+      <p class="lede">Nine foundational terms, a short check, then eight modules, each one your own real portfolio replayed against a real event, plus a real trained model's forecast laid next to what actually happened.</p>
+    </div>
+
+    <!-- ===================== BASICS ===================== -->
+    <div class="panel" id="basicsPanel">
+      <div class="panel-head"><h3>Basics</h3><span class="badge neutral" id="basicsStatus">not completed</span></div>
+      <div class="basics-grid" id="basicsGrid"></div>
+
+      <h3 style="font-size:14px; margin-bottom:10px;">Concept check</h3>
+      <div id="quizWrap"></div>
+      <div id="quizResult"></div>
+      <button class="btn-primary" id="quizSubmit">Check my answers</button>
+    </div>
+
+    <!-- ===================== MODULES ===================== -->
+    <div class="section-head" style="margin-top:40px;">
+      <h2>Eight lessons, each one a real event.</h2>
+    </div>
+
+    <div id="modulesLockedBanner" style="display:none;">🔒 Complete the Basics concept check above to unlock all 8 modules.</div>
+    <div class="locked-grid" id="lockedGrid" style="display:none;"></div>
+
+    <div class="modules" id="unlockedGrid" style="display:none;"></div>
+  </section>
+
+  <footer>
+    <span>MarketMinds · simulated money, real history.</span>
+    <span>Not investment advice · Educational simulation only</span>
+  </footer>
+
+  <script src="assets/js/data.js?v=6"></script>
+  <script src="assets/js/portfolio.js?v=5"></script>
+  <script src="assets/js/app.js?v=5"></script>
+  <script src="assets/js/ticker.js?v=7"></script>
+  <script src="assets/js/market.js"></script>
+  <script src="assets/js/account.js"></script>
+  <script>
+  (function () {
+    const BASICS = [
+      { term: 'What a stock actually is', def: 'Equity = partial ownership in a company. Owning a share means owning a small slice of that company’s assets and future earnings, not a bet on a number going up.' },
+      { term: 'Where stocks trade', def: 'Exchanges (NSE, BSE) and the two headline Indian indices: Sensex (30 stocks, BSE) and Nifty 50 (50 stocks, NSE), as baskets that track “the market” as a whole.' },
+      { term: 'Index vs. individual stock', def: 'Why this app tracks Sensex/Nifty movement, not one company: the difference between “the market fell 38%” and “one stock fell 38%.”' },
+      { term: 'Portfolio', def: 'The full collection of everything a person holds (stocks, gold, cash), not one position.' },
+      { term: 'Diversification', def: 'Spreading money across assets/sectors that don’t all move together, so one bad sector doesn’t sink the whole portfolio.' },
+      { term: 'Equity vs. gold vs. cash', def: 'The three asset classes you can hold in Portfolio, and why they behave differently under stress.' },
+      { term: 'Return and risk', def: 'Return = what you gained/lost, as a %. Risk = how much it could have swung along the way (volatility, drawdown).' },
+      { term: 'Bull / bear / correction / crash', def: 'The vocabulary for “up a lot,” “down a lot,” “down 10–20%,” “down 20%+ fast.”' },
+      { term: 'Buy / sell / order basics', def: 'Market order (buy/sell now, at current price) vs. limit order (buy/sell only at a chosen price or better).' },
+    ];
+
+    const QUIZ = [
+      { q: 'If you own 10 shares of a company with 1,000,000 shares outstanding, what do you actually own?',
+        options: ['10% of the company', 'A tiny fractional ownership stake (10 / 1,000,000)', 'The right to manage the company', 'A loan to the company'], correct: 1 },
+      { q: 'What’s the difference between the Sensex and a single stock like Reliance?',
+        options: ['No difference, they move identically', 'Sensex tracks a basket of 30 companies; Reliance is one company', 'Sensex is riskier than any single stock', 'Reliance is part of the Sensex index calculation only'], correct: 1 },
+      { q: 'Your portfolio is 90% invested in one auto company. What term describes this risk?',
+        options: ['Diversification', 'Concentration risk', 'Market risk', 'Safe-haven allocation'], correct: 1 },
+      { q: 'Which asset class historically tends to hold up (or rise) when equities crash?',
+        options: ['Small-cap stocks', 'Gold', 'The same sector’s stocks', 'Options on the same stocks'], correct: 1 },
+      { q: 'A stock drops 15% from its recent high. By the definitions above, is that a correction or a crash?',
+        options: ['Correction (roughly 10–20%)', 'Crash (20%+, fast)'], correct: 0 },
+      { q: 'You want to guarantee you don’t pay more than ₹500/share. Market order or limit order?',
+        options: ['Market order', 'Limit order'], correct: 1 },
+    ];
+    const PASS_THRESHOLD = 5; // out of 6
+
+    document.getElementById('basicsGrid').innerHTML = BASICS.map((b, i) =>
+      `<div class="basic-card"><div class="n">${i + 1}</div><h4>${b.term}</h4><p>${b.def}</p></div>`
+    ).join('');
+
+    document.getElementById('quizWrap').innerHTML = QUIZ.map((item, qi) =>
+      `<div class="quiz-q" id="q${qi}">
+        <div class="qtext">${qi + 1}. ${item.q}</div>
+        ${item.options.map((opt, oi) => `<label><input type="radio" name="q${qi}" value="${oi}"> ${opt}</label>`).join('')}
+      </div>`
+    ).join('');
+
+    function isPassed() { return !!MMApp.Storage.get('basicsPassed', false); }
+
+    function renderLockState() {
+      const passed = isPassed();
+      document.getElementById('basicsStatus').textContent = passed ? '✓ completed' : 'not completed';
+      document.getElementById('basicsStatus').className = 'badge ' + (passed ? 'rally' : 'neutral');
+      document.getElementById('modulesLockedBanner').style.display = passed ? 'none' : 'block';
+      document.getElementById('lockedGrid').style.display = passed ? 'none' : 'grid';
+      document.getElementById('unlockedGrid').style.display = passed ? 'grid' : 'none';
+      document.getElementById('quizSubmit').textContent = passed ? 'Retake quiz' : 'Check my answers';
+    }
+
+    document.getElementById('quizSubmit').addEventListener('click', () => {
+      let correct = 0;
+      QUIZ.forEach((item, qi) => {
+        const picked = document.querySelector(`input[name="q${qi}"]:checked`);
+        const qEl = document.getElementById('q' + qi);
+        qEl.classList.remove('right', 'wrong');
+        if (picked && +picked.value === item.correct) { correct++; qEl.classList.add('right'); }
+        else if (picked) { qEl.classList.add('wrong'); }
+      });
+      const passed = correct >= PASS_THRESHOLD;
+      const resultEl = document.getElementById('quizResult');
+      resultEl.innerHTML = `<div class="quiz-result ${passed ? 'pass' : 'fail'}">${correct}/${QUIZ.length} correct. ${passed ? 'Passed! All 8 modules are now unlocked below.' : `Need at least ${PASS_THRESHOLD}/${QUIZ.length} to unlock the modules. Review the highlighted questions and try again.`}</div>`;
+      if (passed) {
+        MMApp.Storage.set('basicsPassed', true);
+        renderLockState();
+        MMApp.toast('Basics passed, modules unlocked');
+      }
+    });
+
+    const eventsSorted = MM.EVENTS.slice().sort((a, b) => a.moduleNum - b.moduleNum);
+    document.getElementById('lockedGrid').innerHTML = eventsSorted.map((ev) =>
+      `<div class="locked-card"><div class="lock">🔒</div><h4>MOD ${String(ev.moduleNum).padStart(2, '0')} · ${ev.title}</h4></div>`
+    ).join('');
+
+    document.getElementById('unlockedGrid').innerHTML = eventsSorted.map((ev) => {
+      const cls = ev.realReturnPct >= 0 ? 'up' : 'down';
+      return `<a class="module-card" href="module.html?id=${ev.id}">
+        <div class="module-num">MOD ${String(ev.moduleNum).padStart(2, '0')}</div>
+        <h4>${ev.title}</h4>
+        <p>${ev.summary}</p>
+        <div class="module-return ${cls}">${MMApp.formatPct(ev.realReturnPct)} over the event window</div>
+      </a>`;
+    }).join('');
+
+    renderLockState();
+  })();
+  </script>
+  <script type="module" src="assets/js/firebase-config.js"></script>
+  <script type="module" src="assets/js/auth.js"></script>
+</body>
+</html>

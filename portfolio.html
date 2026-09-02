@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Portfolio · MarketMinds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .balance-row{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap:16px; margin-bottom:24px; }
+  .balance-card{ background:var(--card); border:1px solid var(--card-border); border-radius:14px; padding:20px 24px; }
+  .balance-card .label{ font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; }
+  .balance-card .value{ font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; }
+  .clock-strip{ display:flex; align-items:center; justify-content:space-between; background:var(--bg-raised); border:1px solid var(--card-border); border-radius:10px; padding:10px 16px; margin-bottom:24px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--text-secondary); flex-wrap:wrap; gap:8px; }
+  .clock-strip .date{ color:var(--text-primary); font-weight:600; }
+  .clock-bar{ height:4px; background:var(--card-border); border-radius:2px; overflow:hidden; width:160px; }
+  .clock-bar .fill{ height:100%; background:var(--green); }
+
+  .search-row{ display:flex; gap:10px; margin-bottom:16px; }
+  .search-row input{ flex:1; background:var(--card); border:1px solid var(--card-border); border-radius:8px; padding:10px 14px; color:var(--text-primary); font-family:'Inter',sans-serif; font-size:14px; }
+  .search-row input:focus{ outline:1px solid var(--green-dim); }
+
+  .asset-row{ display:grid; grid-template-columns: 1fr 120px 100px 90px; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid var(--card-border); }
+  .asset-row:last-child{ border-bottom:none; }
+  .asset-row .name{ font-family:'IBM Plex Mono',monospace; font-size:13px; }
+  .asset-row .name .sub{ display:block; font-size:11px; color:var(--text-muted); margin-top:2px; }
+  .asset-row .price{ font-family:'IBM Plex Mono',monospace; font-size:14px; text-align:right; }
+  .asset-row .chg{ font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:right; }
+
+  .holding-row{ display:grid; grid-template-columns: 1.2fr 0.8fr 1fr 1fr 1fr 90px; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--card-border); font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
+  .holding-row:last-child{ border-bottom:none; }
+  .holding-head{ font-size:10.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; padding:0 14px 8px; display:grid; grid-template-columns: 1.2fr 0.8fr 1fr 1fr 1fr 90px; gap:10px; }
+
+  .modal-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,0.6); display:none; align-items:center; justify-content:center; z-index:100; }
+  .modal-backdrop.show{ display:flex; }
+  .modal{ background:var(--card); border:1px solid var(--card-border); border-radius:14px; padding:26px; width:340px; max-width:90vw; }
+  .modal h3{ font-size:16px; margin-bottom:4px; }
+  .modal .sub{ font-size:12px; color:var(--text-muted); margin-bottom:18px; }
+  .modal label{ font-size:12px; color:var(--text-secondary); display:block; margin-bottom:6px; }
+  .modal input{ width:100%; background:var(--bg-raised); border:1px solid var(--card-border); border-radius:8px; padding:10px 12px; color:var(--text-primary); font-family:'IBM Plex Mono',monospace; font-size:14px; margin-bottom:14px; }
+  .modal .summary{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--text-secondary); margin-bottom:16px; }
+  .modal .err{ color:var(--red); font-size:12px; margin-bottom:10px; min-height:16px; }
+  .modal-actions{ display:flex; gap:10px; }
+  .modal-actions button{ flex:1; }
+
+  .empty-note{ padding:24px; text-align:center; color:var(--text-muted); font-size:13px; }
+  @media (max-width:900px){
+    .balance-row{ grid-template-columns:1fr; }
+    .asset-row{ grid-template-columns: 1fr 90px 70px; }
+    .asset-row .chg{ display:none; }
+    .holding-row, .holding-head{ grid-template-columns: 1fr 1fr; }
+    .holding-row span:nth-child(n+4), .holding-head span:nth-child(n+4){ display:none; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="ticker-wrap"><div class="ticker mono"></div></div>
+  <div class="ticker-note"></div>
+
+  <nav>
+    <a class="logo" href="index.html"><div class="logo-mark"><span>M</span></div>MarketMinds</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portfolio.html" class="active">Portfolio</a>
+      <a href="modules.html">Modules</a>
+      <a href="ml-lab.html">ML Lab</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    </div>
+    <a class="nav-cta" href="leaderboard.html" id="navCashBadge" title="View leaderboard" style="white-space:normal; text-align:right;">₹1,00,000 tokens</a>
+  </nav>
+
+  <section class="page" style="padding-top:36px;">
+    <div class="section-head">
+      <h2>Buy and sell like it's a real market.</h2>
+      <p class="lede">Real historical prices (2000–2026, pulled from the actual market), replayed on a shared clock everyone sees the same way, plus fresh, realistic price movement once the real history runs out. Prices tick every few seconds; nothing here is predicted.</p>
+    </div>
+
+    <div class="clock-strip">
+      <span>Market date: <span class="date" id="clockDate">—</span></span>
+      <span id="clockPhase">—</span>
+      <div class="clock-bar"><div class="fill" id="clockFill" style="width:0%"></div></div>
+    </div>
+
+    <div class="balance-row">
+      <div class="balance-card">
+        <div class="label">Token balance</div>
+        <div class="value" id="cashVal">—</div>
+      </div>
+      <div class="balance-card">
+        <div class="label">Stock portfolio worth</div>
+        <div class="value" id="stockVal">—</div>
+      </div>
+      <div class="balance-card">
+        <div class="label">Total worth</div>
+        <div class="value up" id="totalVal">—</div>
+      </div>
+    </div>
+
+    <div class="row equal">
+      <div class="panel">
+        <div class="panel-head"><h3>Stock browser</h3><span class="badge neutral" id="tickerCount">— assets</span></div>
+        <div class="search-row"><input type="text" id="searchBox" placeholder="Search RELIANCE, TCS, gold..."></div>
+        <div id="browserList"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h3>Your holdings</h3></div>
+        <div class="holding-head">
+          <span>Stock</span><span>Qty</span><span>Avg. price</span><span>Current</span><span>Gain/Loss</span><span></span>
+        </div>
+        <div id="holdingsList"><div class="empty-note">No holdings yet, buy something from the browser.</div></div>
+      </div>
+    </div>
+
+    <div class="panel" style="margin-top:20px;">
+      <div class="panel-head"><h3>Transaction history</h3><button class="btn-small" id="resetBtn">Reset account</button></div>
+      <div class="table-scroll"><table class="data-table" id="txTable"></table></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>MarketMinds · simulated money, real history.</span>
+    <span>Not investment advice · Educational simulation only</span>
+  </footer>
+
+  <!-- Buy/Sell modal -->
+  <div class="modal-backdrop" id="modalBackdrop">
+    <div class="modal">
+      <h3 id="modalTitle">Buy</h3>
+      <div class="sub" id="modalSub">—</div>
+      <label>Quantity (shares)</label>
+      <input type="number" id="modalQty" min="1" step="1" value="1">
+      <div class="summary" id="modalSummary">—</div>
+      <div class="err" id="modalErr"></div>
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modalCancel">Cancel</button>
+        <button class="btn-primary" id="modalConfirm">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/data.js?v=6"></script>
+  <script src="assets/js/portfolio.js?v=5"></script>
+  <script src="assets/js/app.js?v=5"></script>
+  <script src="assets/js/ticker.js?v=7"></script>
+  <script src="assets/js/market.js"></script>
+  <script src="assets/js/account.js"></script>
+  <script>
+  (function () {
+    const TICKER_LABELS = {
+      '^BSESN': 'SENSEX (Index)', '^NSEI': 'NIFTY 50 (Index)', 'GOLDBEES.NS': 'GOLD ETF',
+      'RELIANCE.NS': 'Reliance Industries', 'TCS.NS': 'Tata Consultancy Services', 'INFY.NS': 'Infosys',
+      'WIPRO.NS': 'Wipro', 'HDFCBANK.NS': 'HDFC Bank', 'ICICIBANK.NS': 'ICICI Bank',
+      'KOTAKBANK.NS': 'Kotak Mahindra Bank', 'HINDUNILVR.NS': 'Hindustan Unilever', 'ITC.NS': 'ITC',
+      'NESTLEIND.NS': 'Nestle India', 'DRREDDY.NS': "Dr. Reddy's Labs", 'SUNPHARMA.NS': 'Sun Pharma',
+      'MARUTI.NS': 'Maruti Suzuki', 'TATASTEEL.NS': 'Tata Steel', 'ULTRACEMCO.NS': 'UltraTech Cement',
+      'LT.NS': 'Larsen & Toubro', 'ONGC.NS': 'ONGC',
+    };
+    function label(t) { return TICKER_LABELS[t] || t; }
+
+    let prevPrices = {};
+    let modalMode = null, modalTicker = null;
+
+    function fmt(n) { return MMApp.formatINR(n, { decimals: 2 }); }
+
+    function renderClock() {
+      const info = MMMarket.getClockInfo();
+      if (!info) return;
+      document.getElementById('clockDate').textContent = info.simulatedDate;
+      document.getElementById('clockPhase').textContent = info.isReal
+        ? `Real history · loop ${info.loop + 1}`
+        : `Simulated conditions · loop ${info.loop + 1}`;
+      document.getElementById('clockFill').style.width = info.progressPct.toFixed(2) + '%';
+    }
+
+    function renderBrowser(filter) {
+      const tickers = MMMarket.tickers;
+      document.getElementById('tickerCount').textContent = tickers.length + ' assets';
+      const q = (filter || '').toLowerCase();
+      const list = document.getElementById('browserList');
+      const rows = tickers
+        .filter((t) => !q || t.toLowerCase().includes(q) || label(t).toLowerCase().includes(q))
+        .map((t) => {
+          const price = MMMarket.getPrice(t);
+          const prev = prevPrices[t];
+          const chgCls = prev != null ? (price >= prev ? 'pos' : 'neg') : '';
+          return `<div class="asset-row" data-ticker="${t}">
+            <div class="name">${label(t)}<span class="sub">${t}</span></div>
+            <div class="price">${fmt(price)}</div>
+            <div class="chg ${chgCls}">${prev != null ? (price >= prev ? '▲' : '▼') : ''}</div>
+            <button class="btn-small" data-action="buy" data-ticker="${t}">Buy</button>
+          </div>`;
+        }).join('') || '<div class="empty-note">No matches.</div>';
+      list.innerHTML = rows;
+    }
+
+    function renderHoldings() {
+      const acc = MMAccount.load();
+      const tickers = Object.keys(acc.holdings);
+      const list = document.getElementById('holdingsList');
+      if (!tickers.length) {
+        list.innerHTML = '<div class="empty-note">No holdings yet, buy something from the browser.</div>';
+        return;
+      }
+      list.innerHTML = tickers.map((t) => {
+        const h = acc.holdings[t];
+        const cur = MMMarket.getPrice(t);
+        const gl = (cur - h.avgPrice) * h.shares;
+        const glPct = ((cur / h.avgPrice) - 1) * 100;
+        const cls = gl >= 0 ? 'pos' : 'neg';
+        return `<div class="holding-row">
+          <span>${label(t)}</span>
+          <span>${h.shares.toFixed(2)}</span>
+          <span>${fmt(h.avgPrice)}</span>
+          <span>${fmt(cur)}</span>
+          <span class="${cls}">${fmt(gl)} (${MMApp.formatPct(glPct)})</span>
+          <button class="btn-small" data-action="sell" data-ticker="${t}">Sell</button>
+        </div>`;
+      }).join('');
+    }
+
+    function renderTx() {
+      const acc = MMAccount.load();
+      const rows = acc.transactions.slice().reverse().slice(0, 50).map((tx) => {
+        const cls = tx.type === 'buy' ? 'neg' : 'pos';
+        const amt = tx.type === 'buy' ? tx.cost : tx.proceeds;
+        return `<tr>
+          <td>${new Date(tx.timestamp).toLocaleString()}</td>
+          <td class="${tx.type === 'buy' ? 'pos' : 'neg'}">${tx.type.toUpperCase()}</td>
+          <td>${label(tx.ticker)}</td>
+          <td>${tx.shares.toFixed(2)}</td>
+          <td>${fmt(tx.price)}</td>
+          <td class="${cls}">${fmt(amt)}</td>
+        </tr>`;
+      }).join('');
+      document.getElementById('txTable').innerHTML =
+        `<thead><tr><th>When</th><th>Type</th><th>Stock</th><th>Qty</th><th>Price</th><th>Amount</th></tr></thead><tbody>${rows || '<tr><td colspan="6" class="empty-note">No transactions yet.</td></tr>'}</tbody>`;
+    }
+
+    function renderBalances() {
+      const acc = MMAccount.load();
+      const prices = MMMarket.getAllPrices();
+      const stockVal = MMAccount.holdingsWorth(acc, prices);
+      document.getElementById('cashVal').textContent = fmt(acc.cash);
+      document.getElementById('stockVal').textContent = fmt(stockVal);
+      document.getElementById('totalVal').textContent = fmt(acc.cash + stockVal);
+      document.getElementById('navCashBadge').textContent =
+        MMApp.formatINR(acc.cash) + ' tokens · ' + MMApp.formatINR(stockVal) + ' stocks';
+    }
+
+    function renderAll() {
+      if (!MMMarket.loaded) return;
+      renderClock();
+      renderBrowser(document.getElementById('searchBox').value);
+      renderHoldings();
+      renderTx();
+      renderBalances();
+      const snap = MMMarket.getAllPrices();
+      prevPrices = snap;
+    }
+
+    function openModal(mode, ticker) {
+      modalMode = mode; modalTicker = ticker;
+      document.getElementById('modalTitle').textContent = (mode === 'buy' ? 'Buy ' : 'Sell ') + label(ticker);
+      document.getElementById('modalSub').textContent = ticker;
+      document.getElementById('modalQty').value = 1;
+      document.getElementById('modalErr').textContent = '';
+      updateModalSummary();
+      document.getElementById('modalBackdrop').classList.add('show');
+      document.getElementById('modalQty').focus();
+    }
+    function closeModal() {
+      document.getElementById('modalBackdrop').classList.remove('show');
+      modalMode = null; modalTicker = null;
+    }
+    function updateModalSummary() {
+      const qty = Math.max(0, parseFloat(document.getElementById('modalQty').value) || 0);
+      const price = MMMarket.getPrice(modalTicker);
+      const total = qty * price;
+      const acc = MMAccount.load();
+      const verb = modalMode === 'buy' ? 'Cost' : 'Proceeds';
+      let extra = '';
+      if (modalMode === 'buy') extra = `Balance after: ${fmt(acc.cash - total)}`;
+      else {
+        const held = (acc.holdings[modalTicker] || { shares: 0 }).shares;
+        extra = `You hold ${held.toFixed(2)} shares`;
+      }
+      document.getElementById('modalSummary').innerHTML =
+        `Price: ${fmt(price)} · ${verb}: <strong>${fmt(total)}</strong><br>${extra}`;
+    }
+
+    document.getElementById('modalQty').addEventListener('input', updateModalSummary);
+    document.getElementById('modalCancel').addEventListener('click', closeModal);
+    document.getElementById('modalBackdrop').addEventListener('click', (e) => { if (e.target.id === 'modalBackdrop') closeModal(); });
+    document.getElementById('modalConfirm').addEventListener('click', () => {
+      const qty = parseFloat(document.getElementById('modalQty').value);
+      const price = MMMarket.getPrice(modalTicker);
+      const errEl = document.getElementById('modalErr');
+      if (!qty || qty <= 0) { errEl.textContent = 'Enter a valid quantity.'; return; }
+      try {
+        if (modalMode === 'buy') MMAccount.buy(modalTicker, qty, price);
+        else MMAccount.sell(modalTicker, qty, price);
+        const toastMsg = (modalMode === 'buy' ? 'Bought ' : 'Sold ') + qty + ' ' + modalTicker;
+        closeModal();
+        renderAll();
+        MMApp.toast(toastMsg);
+      } catch (e) {
+        errEl.textContent = e.message;
+      }
+    });
+
+    document.getElementById('browserList').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action="buy"]');
+      if (btn) openModal('buy', btn.dataset.ticker);
+    });
+    document.getElementById('holdingsList').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-action="sell"]');
+      if (btn) openModal('sell', btn.dataset.ticker);
+    });
+    document.getElementById('searchBox').addEventListener('input', (e) => renderBrowser(e.target.value));
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      if (confirm('Reset your account back to ₹1,00,000 and clear all holdings/history?')) {
+        MMAccount.reset();
+        renderAll();
+        MMApp.toast('Account reset');
+      }
+    });
+
+    MMMarket.load().then(() => {
+      renderAll();
+      setInterval(renderAll, 6000);
+    });
+  })();
+  </script>
+  <script type="module" src="assets/js/firebase-config.js"></script>
+  <script type="module" src="assets/js/auth.js"></script>
+</body>
+</html>

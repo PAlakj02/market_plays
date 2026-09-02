@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ML Lab · MarketMinds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/styles.css">
+<style>
+  .modelcards{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:8px; }
+  .modelcard{ background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:16px; }
+  .modelcard h4{ font-size:14px; margin-bottom:6px; }
+  .modelcard p{ font-size:12px; color:var(--text-secondary); line-height:1.6; }
+  .barrow{ display:grid; grid-template-columns: 150px 1fr 60px; align-items:center; gap:10px; font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:6px 0; }
+  .barrow .bartrack{ height:8px; background:var(--card-border); border-radius:4px; overflow:hidden; display:flex; }
+  .barrow .seg-better{ background:var(--green); height:100%; }
+  .barrow .seg-worse{ background:var(--red); height:100%; }
+  .window-block{ margin-bottom:26px; }
+  .window-block h4{ font-size:13px; color:var(--text-secondary); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.04em; }
+  .scoreboard-group{ margin-bottom:20px; }
+  .scoreboard-group:last-child{ margin-bottom:0; }
+  .scoreboard-group h4{ font-size:13.5px; color:var(--text-primary); margin-bottom:8px; }
+  .scoreboard-group ul{ list-style:none; padding:0; margin:0; }
+  .scoreboard-group li{ font-size:13px; line-height:1.6; color:var(--text-secondary); padding-left:16px; position:relative; margin-bottom:6px; }
+  .scoreboard-group li::before{ content:'\2022'; position:absolute; left:0; color:var(--text-muted); }
+  .scoreboard-group li .pos{ color:var(--green); }
+  .scoreboard-group li .neg{ color:var(--red); }
+</style>
+</head>
+<body>
+
+  <div class="ticker-wrap"><div class="ticker mono"></div></div>
+  <div class="ticker-note"></div>
+
+  <nav>
+    <a class="logo" href="index.html"><div class="logo-mark"><span>M</span></div>MarketMinds</a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="portfolio.html">Portfolio</a>
+      <a href="crash-replay.html">Crash replay</a>
+      <a href="modules.html">Modules</a>
+      <a href="ml-lab.html" class="active">ML Lab</a>
+      <a href="leaderboard.html">Leaderboard</a>
+    </div>
+    <a class="nav-cta" href="crash-replay.html">see it on COVID</a>
+  </nav>
+
+  <section class="page" style="padding-top:36px;">
+    <div class="section-head">
+      <h2>Five models, eight market regimes, one honest scoreboard.</h2>
+      <p class="lede">Every number on this page comes from a real, walk-forward-tested prediction -- not a demo, not a mockup. The goal was never to prove the models beat the market; it was to find out, and report it either way.</p>
+    </div>
+
+    <div class="modelcards">
+      <div class="modelcard"><h4>Linear Regression</h4><p>Explainable baseline. Refit daily on all prior data: 8 technical-indicator features (moving averages, RSI, MACD, 20-day volatility) predicting the next 5-day log return.</p></div>
+      <div class="modelcard"><h4>ARIMA(5,0,0)</h4><p>Classical time-series baseline fit on log returns, updated (not refit) as each new day arrives. No exogenous features, pure autocorrelation structure.</p></div>
+      <div class="modelcard"><h4>Random Forest</h4><p>Tree ensemble on the same 8 features, refit every 20 trading days on an expanding window. Can capture nonlinear interactions the linear baseline can't.</p></div>
+      <div class="modelcard"><h4>XGBoost</h4><p>Gradient-boosted trees, same features and refit cadence as the Random Forest, for a second nonlinear comparison point.</p></div>
+      <div class="modelcard"><h4>LSTM</h4><p>1-layer, 32-unit sequence model over the last 30 days of features (not a single day's snapshot). Trained once per window (periodic refit only for the multi-year Bull Run); each number here is averaged across 5 independently-seeded runs, since a single run wasn't stable enough to trust on its own.</p></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:8px;">
+    <div class="section-head">
+      <h2>The full picture, one index.</h2>
+    </div>
+    <div id="bsesnTables"></div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="section-head">
+      <h2>It's not just the index.</h2>
+      <p class="lede">For each model/window, the share of assets in the basket where directional accuracy was statistically significantly better than a coin flip (green) vs. significantly worse (red). The rest were not statistically distinguishable from chance.</p>
+    </div>
+    <div class="panel">
+      <div id="basketBars"></div>
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="panel">
+      <h3 style="margin-bottom:16px;">Reading the scoreboard</h3>
+
+      <div class="scoreboard-group">
+        <h4>Crashes are where models break down</h4>
+        <ul>
+          <li>Dot-com crash: Random Forest wrong on <span class="neg">18.2%</span> of the basket</li>
+          <li>Demonetization: Linear Regression wrong on <span class="neg">20%</span> (small sample -- 34 predictions, a hint rather than a strong result)</li>
+          <li>2024–25 correction: XGBoost's worst window, wrong on <span class="neg">25%</span> of the basket</li>
+        </ul>
+      </div>
+
+      <div class="scoreboard-group">
+        <h4>Trending markets look far more learnable</h4>
+        <ul>
+          <li>Bull Run (2003–07): the strongest result on this page -- Random Forest right on <span class="pos">66.7%</span> of the basket, XGBoost <span class="pos">50%</span>, ARIMA <span class="pos">58.5%</span> directional accuracy on the index alone</li>
+          <li>Post-COVID rally: Random Forest right on <span class="pos">30%</span>, wrong on <span class="pos">0%</span></li>
+        </ul>
+      </div>
+
+      <div class="scoreboard-group">
+        <h4>The core pattern</h4>
+        <ul>
+          <li>Random Forest and XGBoost find real structure in calm or trending markets -- but it's regime-specific, and backfires exactly when a regime breaks (2008, COVID, 2016, the 2024–25 correction)</li>
+          <li>Linear Regression never becomes confidently wrong -- it just goes weak and stays there</li>
+        </ul>
+      </div>
+
+      <div class="scoreboard-group">
+        <h4>LSTM tells a different story</h4>
+        <ul>
+          <li>Disagrees with every other model on the Bull Run: <span class="neg">0%</span> right, <span class="neg">18.2%</span> wrong, versus 50–67% right for everyone else</li>
+          <li>Right on <span class="pos">16.7%</span> of the basket for the Recovery Rally, evenly split on Post-COVID (25% right, 25% wrong)</li>
+          <li>A single training run wasn't even consistent with itself -- one early test flipped between "no effect" and "significantly wrong" on identical code. Every LSTM number here is now averaged across 5 separately-trained runs, not one, so what's shown is real and repeatable</li>
+        </ul>
+      </div>
+
+      <div class="scoreboard-group">
+        <h4>Coverage</h4>
+        <ul>
+          <li>8 of 9 market windows are covered by all five models, using real historical data (1998–2026) and the same testing method throughout</li>
+          <li>Dot-com crash isn't covered by LSTM yet -- that period starts before this data goes back</li>
+          <li>A regime-detection layer isn't built yet either</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>MarketMinds · simulated money, real history.</span>
+    <span>Not investment advice · Educational simulation only</span>
+  </footer>
+
+  <script src="assets/js/data.js?v=6"></script>
+  <script src="assets/js/portfolio.js?v=5"></script>
+  <script src="assets/js/app.js?v=5"></script>
+  <script src="assets/js/ticker.js?v=7"></script>
+  <script>
+  (function () {
+    const windows = [
+      ['normal', MM.ML_METRICS.bsesn.normal],
+      ['bullrun', MM.ML_METRICS.bsesn.bullrun],
+      ['dotcom', MM.ML_METRICS.bsesn.dotcom],
+      ['gfc2008', MM.ML_METRICS.bsesn.gfc2008],
+      ['covid2020', MM.ML_METRICS.bsesn.covid2020],
+      ['correction2425', MM.ML_METRICS.bsesn.correction2425],
+      ['recovery0910', MM.ML_METRICS.bsesn.recovery0910],
+      ['demon2016', MM.ML_METRICS.bsesn.demon2016],
+      ['postcovid', MM.ML_METRICS.bsesn.postcovid],
+    ];
+    document.getElementById('bsesnTables').innerHTML = windows.map(([key, w]) => {
+      const rows = ['linear_regression','arima','random_forest','xgboost','lstm'].filter(k => w[k]).map(k => {
+        const m = w[k];
+        const ciTxt = m.ci ? `[${m.ci[0]}–${m.ci[1]}]` : '—';
+        let sigTxt = '<span class="neu">not tested</span>';
+        if (m.ci) {
+          if (m.sig_better) sigTxt = '<span class="pos">significantly better</span>';
+          else if (m.sig_worse) sigTxt = '<span class="neg">significantly worse</span>';
+          else sigTxt = '<span class="neu">not significant</span>';
+        }
+        const accCls = m.dir_acc_pct >= 50 ? 'pos' : 'neg';
+        return `<tr><td>${MM.MODEL_NAMES[k]}</td><td>${m.mae_pct}%</td><td>${m.rmse_pct}%</td><td class="${accCls}">${m.dir_acc_pct}%</td><td>${ciTxt}</td><td>${sigTxt}</td><td>${m.n}</td></tr>`;
+      }).join('');
+      return `<div class="window-block">
+        <h4>${w.window_label}</h4>
+        <div class="panel" style="padding:0;">
+          <div class="table-scroll"><table class="data-table">
+            <thead><tr><th>Model</th><th>MAE</th><th>RMSE</th><th>Dir. accuracy</th><th>95% CI</th><th>vs. random</th><th>n</th></tr></thead>
+            <tbody>${rows}</tbody>
+          </table></div>
+        </div>
+      </div>`;
+    }).join('');
+
+    const windowLabels = {
+      normal: 'Normal (2017)', gfc2008: '2008 crisis', covid2020: 'COVID crash',
+      bullrun: 'Bull run', dotcom: 'Dot-com crash', correction2425: '2024–25 correction',
+      recovery0910: 'Recovery rally', demon2016: 'Demonetization', postcovid: 'Post-COVID rally',
+    };
+    document.getElementById('basketBars').innerHTML = MM.ML_METRICS.basketSignificance.map(row => {
+      return `<div class="barrow">
+        <span>${MM.MODEL_NAMES[row.model]} · ${windowLabels[row.window]}</span>
+        <span class="bartrack"><span class="seg-better" style="width:${row.pctBetter}%"></span><span class="seg-worse" style="width:${row.pctWorse}%"></span></span>
+        <span>${row.pctBetter}% / ${row.pctWorse}%</span>
+      </div>`;
+    }).join('');
+  })();
+  </script>
+  <script type="module" src="assets/js/firebase-config.js"></script>
+  <script type="module" src="assets/js/auth.js"></script>
+</body>
+</html>
