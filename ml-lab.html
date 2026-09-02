@@ -8,7 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
 <style>
-  .modelcards{ display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:8px; }
+  .modelcards{ display:grid; grid-template-columns:repeat(5,1fr); gap:14px; margin-bottom:8px; }
   .modelcard{ background:var(--card); border:1px solid var(--card-border); border-radius:12px; padding:16px; }
   .modelcard h4{ font-size:14px; margin-bottom:6px; }
   .modelcard p{ font-size:12px; color:var(--text-secondary); line-height:1.6; }
@@ -18,6 +18,14 @@
   .barrow .seg-worse{ background:var(--red); height:100%; }
   .window-block{ margin-bottom:26px; }
   .window-block h4{ font-size:13px; color:var(--text-secondary); margin-bottom:10px; text-transform:uppercase; letter-spacing:0.04em; }
+  .scoreboard-group{ margin-bottom:20px; }
+  .scoreboard-group:last-child{ margin-bottom:0; }
+  .scoreboard-group h4{ font-size:13.5px; color:var(--text-primary); margin-bottom:8px; }
+  .scoreboard-group ul{ list-style:none; padding:0; margin:0; }
+  .scoreboard-group li{ font-size:13px; line-height:1.6; color:var(--text-secondary); padding-left:16px; position:relative; margin-bottom:6px; }
+  .scoreboard-group li::before{ content:'\2022'; position:absolute; left:0; color:var(--text-muted); }
+  .scoreboard-group li .pos{ color:var(--green); }
+  .scoreboard-group li .neg{ color:var(--red); }
 </style>
 </head>
 <body>
@@ -40,8 +48,8 @@
 
   <section class="page" style="padding-top:36px;">
     <div class="section-head">
-      <h2>Four models, three market regimes, one honest scoreboard.</h2>
-      <p class="lede">Every number on this page comes from this project's own walk-forward, no-lookahead evaluation (<code class="mono">src/forecasting.py</code>), not a demo, not a mockup. The goal was never to prove the models beat the market; it was to find out, and report it either way.</p>
+      <h2>Five models, eight market regimes, one honest scoreboard.</h2>
+      <p class="lede">Every number on this page comes from a real, walk-forward-tested prediction -- not a demo, not a mockup. The goal was never to prove the models beat the market; it was to find out, and report it either way.</p>
     </div>
 
     <div class="modelcards">
@@ -49,6 +57,7 @@
       <div class="modelcard"><h4>ARIMA(5,0,0)</h4><p>Classical time-series baseline fit on log returns, updated (not refit) as each new day arrives. No exogenous features, pure autocorrelation structure.</p></div>
       <div class="modelcard"><h4>Random Forest</h4><p>Tree ensemble on the same 8 features, refit every 20 trading days on an expanding window. Can capture nonlinear interactions the linear baseline can't.</p></div>
       <div class="modelcard"><h4>XGBoost</h4><p>Gradient-boosted trees, same features and refit cadence as the Random Forest, for a second nonlinear comparison point.</p></div>
+      <div class="modelcard"><h4>LSTM</h4><p>1-layer, 32-unit sequence model over the last 30 days of features (not a single day's snapshot). Trained once per window (periodic refit only for the multi-year Bull Run); each number here is averaged across 5 independently-seeded runs, since a single run wasn't stable enough to trust on its own.</p></div>
     </div>
   </section>
 
@@ -71,13 +80,50 @@
 
   <section class="section" style="padding-top:0;">
     <div class="panel">
-      <h3 style="margin-bottom:12px;">Reading the scoreboard</h3>
-      <p class="note" style="font-size:13px; line-height:1.8; color:var(--text-secondary);">
-        <strong style="color:var(--text-primary);">Crashes and shocks are where models break.</strong> Dot-com crash: Random Forest flips to 18.2% of the basket significantly <em>worse</em> than random. Demonetization: Linear Regression hits 20% significantly worse (n is small here, 34 predictions, so treat it as a hint, not a strong result). 2024–25 Correction: XGBoost is significantly worse on 25% of the basket, its worst showing of any window trained.<br><br>
-        <strong style="color:var(--text-primary);">Sustained trends are a different story.</strong> The Bull Run (2003–07) is the strongest calm-market result on this page. Random Forest hits 66.7% of the basket significantly <em>better</em> than random, XGBoost 50%, and even ARIMA reaches 58.5% directional accuracy on the index alone. The Post-COVID rally (2020–21) shows a similar pattern: Random Forest 30% significantly better, zero percent significantly worse. Momentum, in other words, looks far more learnable than a turning point.<br><br>
-        <strong style="color:var(--text-primary);">Same pattern as the original 2008/COVID finding, now with 6 more data points:</strong> tree-based models find more real-looking structure in trending or calm conditions, but that structure is regime-specific. It's most likely to backfire exactly when a regime breaks (2008, COVID, the 2024–25 correction, the 2016 policy shock). Linear regression's failure mode stays consistent across all 8 windows: it rarely becomes confidently wrong, it just goes weak/silent instead.
-      </p>
-      <p class="note" style="margin-top:14px;">All 8 windows have real trained models (Linear Regression, ARIMA, Random Forest, XGBoost), on real yfinance data (1998–2026), using the same walk-forward, no-lookahead method throughout. An LSTM/GRU sequence model and a regime-detection layer (k-means or HMM on volatility/return features) aren't represented on this page.</p>
+      <h3 style="margin-bottom:16px;">Reading the scoreboard</h3>
+
+      <div class="scoreboard-group">
+        <h4>Crashes are where models break down</h4>
+        <ul>
+          <li>Dot-com crash: Random Forest wrong on <span class="neg">18.2%</span> of the basket</li>
+          <li>Demonetization: Linear Regression wrong on <span class="neg">20%</span> (small sample -- 34 predictions, a hint rather than a strong result)</li>
+          <li>2024–25 correction: XGBoost's worst window, wrong on <span class="neg">25%</span> of the basket</li>
+        </ul>
+      </div>
+
+      <div class="scoreboard-group">
+        <h4>Trending markets look far more learnable</h4>
+        <ul>
+          <li>Bull Run (2003–07): the strongest result on this page -- Random Forest right on <span class="pos">66.7%</span> of the basket, XGBoost <span class="pos">50%</span>, ARIMA <span class="pos">58.5%</span> directional accuracy on the index alone</li>
+          <li>Post-COVID rally: Random Forest right on <span class="pos">30%</span>, wrong on <span class="pos">0%</span></li>
+        </ul>
+      </div>
+
+      <div class="scoreboard-group">
+        <h4>The core pattern</h4>
+        <ul>
+          <li>Random Forest and XGBoost find real structure in calm or trending markets -- but it's regime-specific, and backfires exactly when a regime breaks (2008, COVID, 2016, the 2024–25 correction)</li>
+          <li>Linear Regression never becomes confidently wrong -- it just goes weak and stays there</li>
+        </ul>
+      </div>
+
+      <div class="scoreboard-group">
+        <h4>LSTM tells a different story</h4>
+        <ul>
+          <li>Disagrees with every other model on the Bull Run: <span class="neg">0%</span> right, <span class="neg">18.2%</span> wrong, versus 50–67% right for everyone else</li>
+          <li>Right on <span class="pos">16.7%</span> of the basket for the Recovery Rally, evenly split on Post-COVID (25% right, 25% wrong)</li>
+          <li>A single training run wasn't even consistent with itself -- one early test flipped between "no effect" and "significantly wrong" on identical code. Every LSTM number here is now averaged across 5 separately-trained runs, not one, so what's shown is real and repeatable</li>
+        </ul>
+      </div>
+
+      <div class="scoreboard-group">
+        <h4>Coverage</h4>
+        <ul>
+          <li>8 of 9 market windows are covered by all five models, using real historical data (1998–2026) and the same testing method throughout</li>
+          <li>Dot-com crash isn't covered by LSTM yet -- that period starts before this data goes back</li>
+          <li>A regime-detection layer isn't built yet either</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -86,7 +132,7 @@
     <span>Not investment advice · Educational simulation only</span>
   </footer>
 
-  <script src="assets/js/data.js?v=5"></script>
+  <script src="assets/js/data.js?v=6"></script>
   <script src="assets/js/portfolio.js?v=5"></script>
   <script src="assets/js/app.js?v=5"></script>
   <script src="assets/js/ticker.js?v=7"></script>
@@ -104,7 +150,7 @@
       ['postcovid', MM.ML_METRICS.bsesn.postcovid],
     ];
     document.getElementById('bsesnTables').innerHTML = windows.map(([key, w]) => {
-      const rows = ['linear_regression','arima','random_forest','xgboost'].map(k => {
+      const rows = ['linear_regression','arima','random_forest','xgboost','lstm'].filter(k => w[k]).map(k => {
         const m = w[k];
         const ciTxt = m.ci ? `[${m.ci[0]}–${m.ci[1]}]` : '—';
         let sigTxt = '<span class="neu">not tested</span>';

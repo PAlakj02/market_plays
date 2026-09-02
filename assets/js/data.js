@@ -237,6 +237,7 @@
         arima: { mae_pct: 1.054, rmse_pct: 1.303, dir_acc_pct: 66.9, n: 260 },
         random_forest: { mae_pct: 1.099, rmse_pct: 1.352, dir_acc_pct: 59.6, ci: [53.6, 65.4], sig_better: true, n: 260 },
         xgboost: { mae_pct: 1.362, rmse_pct: 1.679, dir_acc_pct: 45.8, ci: [39.8, 51.8], sig_better: false, n: 260 },
+        lstm: { mae_pct: 1.082, rmse_pct: 1.336, dir_acc_pct: 51.5, ci: [45.5, 57.5], sig_better: false, sig_worse: false, p: 0.6198, n: 260 },
       },
       gfc2008: {
         window_label: '2008 financial crisis (trained thru 2007, tested Jan08–Mar09)',
@@ -244,6 +245,7 @@
         arima: { mae_pct: 4.958, rmse_pct: 6.336, dir_acc_pct: 44.8, n: 326 },
         random_forest: { mae_pct: 5.134, rmse_pct: 6.528, dir_acc_pct: 49.4, ci: [44.0, 54.8], sig_worse: false, n: 326 },
         xgboost: { mae_pct: 5.325, rmse_pct: 6.903, dir_acc_pct: 52.5, ci: [47.0, 57.8], sig_worse: false, n: 326 },
+        lstm: { mae_pct: 5.792, rmse_pct: 7.385, dir_acc_pct: 47.2, ci: [41.9, 52.7], sig_better: false, sig_worse: false, p: 0.3188, n: 326 },
       },
       covid2020: {
         window_label: 'COVID crash (trained thru 2019, tested 20 Feb–30 Apr 2020)',
@@ -251,6 +253,7 @@
         arima: { mae_pct: 6.293, rmse_pct: 7.898, dir_acc_pct: 31.4, n: 51 },
         random_forest: { mae_pct: 6.948, rmse_pct: 8.606, dir_acc_pct: 27.5, ci: [17.1, 40.9], sig_worse: true, p: 0.0013, n: 51 },
         xgboost: { mae_pct: 8.810, rmse_pct: 10.695, dir_acc_pct: 31.4, ci: [20.3, 45.0], sig_worse: true, p: 0.0078, n: 51 },
+        lstm: { mae_pct: 6.448, rmse_pct: 8.382, dir_acc_pct: 41.2, ci: [28.8, 54.8], sig_better: false, sig_worse: false, p: 0.2076, n: 51 },
       },
       dotcom: {
         window_label: 'Dot-com crash (trained thru Jan 2000, tested 11 Feb 2000–21 Sep 2001)',
@@ -265,6 +268,7 @@
         arima: { mae_pct: 2.643, rmse_pct: 3.354, dir_acc_pct: 58.5, ci: [55.7, 61.3], sig_better: true, sig_worse: false, n: 1210 },
         random_forest: { mae_pct: 2.982, rmse_pct: 3.800, dir_acc_pct: 55.3, ci: [52.5, 58.1], sig_better: true, sig_worse: false, p: 0.0002, n: 1210 },
         xgboost: { mae_pct: 3.085, rmse_pct: 3.960, dir_acc_pct: 56.3, ci: [53.5, 59.1], sig_better: true, sig_worse: false, n: 1210 },
+        lstm: { mae_pct: 3.445, rmse_pct: 4.370, dir_acc_pct: 42.0, ci: [39.3, 44.7], sig_better: false, sig_worse: true, p: 0.0, n: 1246 },
       },
       recovery0910: {
         window_label: 'Recovery rally (trained thru Mar 2009, tested 9 Mar 2009–5 Nov 2010)',
@@ -272,6 +276,7 @@
         arima: { mae_pct: 2.640, rmse_pct: 3.826, dir_acc_pct: 62.1, ci: [57.4, 66.7], sig_better: true, sig_worse: false, n: 412 },
         random_forest: { mae_pct: 3.029, rmse_pct: 4.135, dir_acc_pct: 49.0, ci: [44.2, 53.8], sig_better: false, sig_worse: false, n: 412 },
         xgboost: { mae_pct: 3.032, rmse_pct: 4.061, dir_acc_pct: 54.9, ci: [50.0, 59.6], sig_better: true, sig_worse: false, p: 0.0488, n: 412 },
+        lstm: { mae_pct: 2.611, rmse_pct: 3.761, dir_acc_pct: 59.3, ci: [54.6, 63.8], sig_better: true, sig_worse: false, p: 0.0001, n: 435 },
       },
       demon2016: {
         window_label: 'Demonetization (trained thru 7 Nov 2016, tested 8 Nov–26 Dec 2016)',
@@ -279,6 +284,7 @@
         arima: { mae_pct: 1.712, rmse_pct: 2.132, dir_acc_pct: 38.2, ci: [23.9, 55.0], sig_better: false, sig_worse: false, n: 34 },
         random_forest: { mae_pct: 1.647, rmse_pct: 2.070, dir_acc_pct: 38.2, ci: [23.9, 55.0], sig_better: false, sig_worse: false, n: 34 },
         xgboost: { mae_pct: 1.631, rmse_pct: 2.102, dir_acc_pct: 58.8, ci: [42.2, 73.6], sig_better: false, sig_worse: false, n: 34 },
+        lstm: { mae_pct: 1.856, rmse_pct: 2.293, dir_acc_pct: 37.1, ci: [23.2, 53.7], sig_better: false, sig_worse: false, p: 0.1282, n: 35 },
       },
       postcovid: {
         window_label: 'Post-COVID rally (trained thru 22 Mar 2020, tested 23 Mar 2020–18 Oct 2021)',
@@ -286,6 +292,7 @@
         arima: { mae_pct: 1.973, rmse_pct: 2.730, dir_acc_pct: 65.7, ci: [60.9, 70.3], sig_better: true, sig_worse: false, n: 391 },
         random_forest: { mae_pct: 2.105, rmse_pct: 2.966, dir_acc_pct: 60.1, ci: [55.2, 64.8], sig_better: true, sig_worse: false, p: 0.0001, n: 391 },
         xgboost: { mae_pct: 2.176, rmse_pct: 2.936, dir_acc_pct: 55.0, ci: [50.0, 59.8], sig_better: true, sig_worse: false, p: 0.0486, n: 391 },
+        lstm: { mae_pct: 2.178, rmse_pct: 2.934, dir_acc_pct: 50.1, ci: [45.3, 54.9], sig_better: false, sig_worse: false, p: 0.9607, n: 411 },
       },
       correction2425: {
         window_label: '2024–25 correction (trained thru 26 Sep 2024, tested 27 Sep 2024–1 Feb 2025)',
@@ -293,6 +300,7 @@
         arima: { mae_pct: 1.508, rmse_pct: 1.935, dir_acc_pct: 45.5, ci: [35.5, 55.8], sig_better: false, sig_worse: false, n: 88 },
         random_forest: { mae_pct: 1.489, rmse_pct: 1.919, dir_acc_pct: 44.3, ci: [34.4, 54.7], sig_better: false, sig_worse: false, n: 88 },
         xgboost: { mae_pct: 1.523, rmse_pct: 1.906, dir_acc_pct: 46.6, ci: [36.5, 56.9], sig_better: false, sig_worse: false, n: 88 },
+        lstm: { mae_pct: 2.318, rmse_pct: 2.969, dir_acc_pct: 59.3, ci: [49.1, 68.9], sig_better: false, sig_worse: false, p: 0.0747, n: 91 },
       },
     },
     reliance_covid_xgboost: { mae_pct: 10.738, rmse_pct: 12.341, dir_acc_pct: 29.4, ci: [18.7, 43.0], sig_worse: true, p: 0.0033, n: 51 },
@@ -322,6 +330,14 @@
       { model: 'xgboost', window: 'postcovid', total: 20, sigBetter: 5, sigWorse: 0, pctBetter: 25.0, pctWorse: 0.0 },
       { model: 'random_forest', window: 'correction2425', total: 20, sigBetter: 3, sigWorse: 1, pctBetter: 15.0, pctWorse: 5.0 },
       { model: 'xgboost', window: 'correction2425', total: 20, sigBetter: 2, sigWorse: 5, pctBetter: 10.0, pctWorse: 25.0 },
+      { model: 'lstm', window: 'normal', total: 20, sigBetter: 3, sigWorse: 6, pctBetter: 15.0, pctWorse: 30.0 },
+      { model: 'lstm', window: 'gfc2008', total: 18, sigBetter: 2, sigWorse: 1, pctBetter: 11.1, pctWorse: 5.6 },
+      { model: 'lstm', window: 'covid2020', total: 20, sigBetter: 2, sigWorse: 0, pctBetter: 10.0, pctWorse: 0.0 },
+      { model: 'lstm', window: 'bullrun', total: 11, sigBetter: 0, sigWorse: 2, pctBetter: 0.0, pctWorse: 18.2 },
+      { model: 'lstm', window: 'recovery0910', total: 18, sigBetter: 3, sigWorse: 5, pctBetter: 16.7, pctWorse: 27.8 },
+      { model: 'lstm', window: 'demon2016', total: 20, sigBetter: 1, sigWorse: 2, pctBetter: 5.0, pctWorse: 10.0 },
+      { model: 'lstm', window: 'postcovid', total: 20, sigBetter: 5, sigWorse: 5, pctBetter: 25.0, pctWorse: 25.0 },
+      { model: 'lstm', window: 'correction2425', total: 20, sigBetter: 0, sigWorse: 1, pctBetter: 0.0, pctWorse: 5.0 },
     ],
   };
 
@@ -330,6 +346,7 @@
     arima: 'ARIMA(5,0,0)',
     random_forest: 'Random Forest',
     xgboost: 'XGBoost',
+    lstm: 'LSTM',
   };
 
   const SECTOR_TILTS = {
