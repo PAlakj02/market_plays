@@ -2,8 +2,7 @@
 // plain (non-module) scripts on each page can use it the same way they use MMAccount/MMApp.
 //
 // Scope of this pass: authentication only (sign up, sign in, sign out, auth-state-aware nav).
-// Portfolio data (account.js) still lives in localStorage -- moving it to Firestore per signed-in
-// user is separate follow-up work, not done here.
+// Portfolio data (account.js) syncs to Firestore per signed-in user -- see account.js.
 
 import {
   createUserWithEmailAndPassword,

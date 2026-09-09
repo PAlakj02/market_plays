@@ -408,7 +408,7 @@
     document.getElementById('conceptPoints').innerHTML = L.points.map((p) => `<li>${p}</li>`).join('');
     document.getElementById('simEventName').textContent = ev.short;
 
-    MMMarket.load().then(() => {
+    Promise.all([MMMarket.load(), MMAccount.ready]).then(() => {
       const acc = MMAccount.load();
       const holdingTickers = Object.keys(acc.holdings).filter((t) => acc.holdings[t].shares > 0);
 

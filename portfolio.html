@@ -328,7 +328,7 @@
       }
     });
 
-    MMMarket.load().then(() => {
+    Promise.all([MMMarket.load(), MMAccount.ready]).then(() => {
       renderAll();
       setInterval(renderAll, 6000);
     });
