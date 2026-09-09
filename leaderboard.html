@@ -23,19 +23,18 @@
       <a href="ml-lab.html">ML Lab</a>
       <a href="leaderboard.html" class="active">Leaderboard</a>
     </div>
-    <a class="nav-cta" href="portfolio.html">add a run</a>
+    <a class="nav-cta" href="portfolio.html">play a round</a>
   </nav>
 
   <section class="page" style="padding-top:36px;">
     <div class="section-head">
-      <h2>Your leaderboard</h2>
-      <p class="lede">Ranking</p>
+      <h2>Leaderboard</h2>
+      <p class="lede">Ranked by return on Standard and Full rounds -- pick a real start date on the <a href="portfolio.html" style="color:var(--gold); text-decoration:underline;">Portfolio</a> page, live through whatever the market actually did next, and your score lands here.</p>
     </div>
 
     <div class="panel">
       <div class="panel-head">
-        <h3 id="countLabel">0 saved runs</h3>
-        <button class="btn-small" id="clearBtn">Clear all</button>
+        <h3 id="countLabel">Loading…</h3>
       </div>
       <div class="table-scroll">
         <table class="data-table" id="lbTable"></table>
@@ -49,43 +48,58 @@
   </footer>
 
   <script src="assets/js/data.js?v=6"></script>
-  <script src="assets/js/portfolio.js?v=5"></script>
   <script src="assets/js/app.js?v=5"></script>
   <script src="assets/js/ticker.js?v=7"></script>
-  <script>
-  (function () {
-    function weightsLabel(w) {
-      const keys = Object.keys(w).filter(k => w[k] > 0);
-      return keys.map(k => `${Math.round(w[k]*100)}% ${(MMPortfolio.INSTRUMENT_LABELS[k]||k)}`).join(' + ') || 'all cash';
+  <script type="module">
+    import { collection, query, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+    import { firebaseDb } from './assets/js/firebase-config.js';
+
+    const MODE_LABEL = { standard: 'Standard round', full: 'Full round' };
+    function eventTitle(id) {
+      const ev = MM.EVENTS.find((e) => e.id === id);
+      return ev ? ev.title : id;
     }
-    function render() {
-      const runs = MMApp.Storage.get('runs', []).slice().sort((a, b) => b.returnPct - a.returnPct);
-      document.getElementById('countLabel').textContent = runs.length + ' saved run' + (runs.length === 1 ? '' : 's');
+
+    async function render() {
+      const countLabel = document.getElementById('countLabel');
+      let runs = [];
+      try {
+        const q = query(collection(firebaseDb, 'leaderboard_runs'), orderBy('returnPct', 'desc'), limit(100));
+        const snap = await getDocs(q);
+        snap.forEach((doc) => runs.push(doc.data()));
+      } catch (e) {
+        countLabel.textContent = 'Could not load the leaderboard';
+        document.getElementById('lbTable').innerHTML = `<tbody><tr><td class="empty-note">${e.message || 'Try refreshing.'}</td></tr></tbody>`;
+        console.error('MarketMinds: failed to load leaderboard', e);
+        return;
+      }
+
+      countLabel.textContent = runs.length + ' saved round' + (runs.length === 1 ? '' : 's');
+      if (!runs.length) {
+        document.getElementById('lbTable').innerHTML =
+          `<tbody><tr><td class="empty-note">No rounds saved yet -- be the first. Play a Standard or Full round on the Portfolio page.</td></tr></tbody>`;
+        return;
+      }
+
       const rows = runs.map((r, i) => {
         const cls = r.returnPct >= 0 ? 'pos' : 'neg';
+        const crashes = (r.crashesHit || []).map(eventTitle).join(', ') || '—';
         return `<tr>
-          <td>#${i+1}</td>
-          <td>${r.name}</td>
-          <td>${r.startDate}</td>
-          <td>${weightsLabel(r.weights)}</td>
+          <td>#${i + 1}</td>
+          <td>${r.name || 'Player'}</td>
+          <td>${MODE_LABEL[r.mode] || r.mode}</td>
+          <td>${r.startDate} → ${r.endDate}</td>
           <td class="${cls}">${MMApp.formatPct(r.returnPct)}</td>
-          <td>${r.maxDrawdownPct.toFixed(1)}%</td>
+          <td>${(r.maxDrawdownPct != null ? r.maxDrawdownPct.toFixed(1) : '—')}%</td>
           <td>${MMApp.formatINR(r.endValue)}</td>
-          <td>${new Date(r.timestamp).toLocaleDateString()}</td>
+          <td>${crashes}</td>
         </tr>`;
       }).join('');
       document.getElementById('lbTable').innerHTML = `
-        <thead><tr><th>#</th><th>Name</th><th>Start</th><th>Allocation</th><th>Return</th><th>Max DD</th><th>End value</th><th>Saved</th></tr></thead>
+        <thead><tr><th>#</th><th>Player</th><th>Mode</th><th>Dates</th><th>Return</th><th>Max DD</th><th>End value</th><th>Real events hit</th></tr></thead>
         <tbody>${rows}</tbody>`;
     }
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      if (confirm('Clear all saved runs on this device?')) {
-        MMApp.Storage.set('runs', []);
-        render();
-      }
-    });
     render();
-  })();
   </script>
   <script type="module" src="assets/js/firebase-config.js"></script>
   <script type="module" src="assets/js/auth.js"></script>

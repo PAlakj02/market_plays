@@ -184,6 +184,11 @@
     return REAL.dates.slice(si, ei + 1);
   }
 
+  function nearestRealDate(dateStr) {
+    if (!REAL) return null;
+    return REAL.dates[nearestRealIndex(dateStr)];
+  }
+
   function getAllPrices(nowMs) {
     const out = {};
     if (!REAL) return out;
@@ -204,8 +209,10 @@
   }
 
   global.MMMarket = {
-    load, getPrice, getAllPrices, getClockInfo, getRealPriceOnDate, getRealDatesBetween,
+    load, getPrice, getAllPrices, getClockInfo, getRealPriceOnDate, getRealDatesBetween, nearestRealDate,
     get tickers() { return REAL ? REAL.tickers : []; },
     get loaded() { return !!REAL; },
+    get firstRealDate() { return REAL ? REAL.dates[0] : null; },
+    get lastRealDate() { return REAL ? REAL.dates[REAL.dates.length - 1] : null; },
   };
 })(window);
