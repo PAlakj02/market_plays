@@ -1,0 +1,20 @@
+# This is a static HTML/CSS/JS site -- everything below is the Python ML
+# pipeline (offline model training/research), not part of the deployed site.
+# Excluding it stops Vercel from mis-detecting this as a Python project.
+notebooks/
+src/
+scripts/
+models/
+data/
+results/
+public/
+docs/
+app/
+.venv/
+*.ipynb
+requirements.txt
+kaggle.json
+MarketMinds_Proposal (2).docx.md
+marketminds_design_mockup.html
+image.png
+image11.jpeg
