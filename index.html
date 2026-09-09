@@ -198,17 +198,38 @@
         </a>`;
       }).join('');
 
-      const runs = MMApp.Storage.get('runs', []);
-      if (runs.length) {
-        const last = runs[runs.length - 1];
-        const cls = last.returnPct >= 0 ? 'up' : 'down';
-        document.getElementById('cardPortfolioVal').textContent = MMApp.formatINR(last.endValue);
-        document.getElementById('cardPortfolioVal').className = 'value ' + cls;
-        document.getElementById('cardPortfolioDelta').textContent = MMApp.formatPct(last.returnPct) + ' · last simulator run';
-      }
-
       const acc = MMAccount.load();
       document.getElementById('navCashBadge').textContent = MMApp.formatINR(acc.cash) + ' tokens';
+
+      // "Your portfolio" hero card: show the signed-in user's most recent saved Standard/Full
+      // Round result, if they have one. This used to read a 'runs' localStorage key that nothing
+      // in the app ever wrote to (dead code) -- rounds now save to Firestore, see portfolio.html.
+      // No sign-in, or no saved rounds yet: leave the illustrative placeholder value as-is.
+      async function loadLastRound(user) {
+        if (!user) return;
+        try {
+          const [{ collection, query, where, getDocs }, { firebaseDb }] = await Promise.all([
+            import('https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js'),
+            import('./assets/js/firebase-config.js'),
+          ]);
+          const q = query(collection(firebaseDb, 'leaderboard_runs'), where('uid', '==', user.uid));
+          const snap = await getDocs(q);
+          const runs = [];
+          snap.forEach((d) => runs.push(d.data()));
+          if (!runs.length) return;
+          runs.sort((a, b) => (b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0) - (a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0));
+          const last = runs[0];
+          const cls = last.returnPct >= 0 ? 'up' : 'down';
+          document.getElementById('cardPortfolioVal').textContent = MMApp.formatINR(last.endValue);
+          document.getElementById('cardPortfolioVal').className = 'value ' + cls;
+          document.getElementById('cardPortfolioDelta').textContent =
+            MMApp.formatPct(last.returnPct) + ' · last ' + (last.mode === 'full' ? 'full' : 'standard') + ' round';
+        } catch (e) {
+          console.error('MarketMinds: could not load last round for hero card', e);
+        }
+      }
+      if (window.MMAuth) MMAuth.onAuthChange(loadLastRound);
+      else document.addEventListener('DOMContentLoaded', () => { if (window.MMAuth) MMAuth.onAuthChange(loadLastRound); });
     })();
   </script>
   <script type="module" src="assets/js/firebase-config.js"></script>
