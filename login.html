@@ -206,18 +206,22 @@
 
       googleBtn.addEventListener('click', async () => {
         try {
-          await MMAuth.signInWithGoogle();
-          window.location.href = returnTo;
+          await MMAuth.signInWithGoogle(); // navigates to Google and back -- nothing after this runs
         } catch (err) {
           showError(err, MMAuth);
         }
       });
 
       // Already signed in? Skip straight through -- unless we're actively resetting a password,
-      // which needs to stay usable while signed in too.
+      // which needs to stay usable while signed in too. This also fires after returning from a
+      // successful Google redirect sign-in.
       MMAuth.onAuthChange((user) => {
         if (user && mode !== 'reset') window.location.href = returnTo;
       });
+
+      // If we just came back from a Google redirect and it failed (rather than simply being
+      // cancelled), show why instead of silently landing back here with no explanation.
+      MMAuth.onGoogleRedirectError((err) => showError(err, MMAuth));
     });
   </script>
 </body>

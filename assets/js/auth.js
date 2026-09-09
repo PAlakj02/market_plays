@@ -11,7 +11,8 @@ import {
   onAuthStateChanged,
   updateProfile,
   GoogleAuthProvider,
-  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
   sendPasswordResetEmail,
 } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 import { firebaseAuth } from './firebase-config.js';
@@ -29,10 +30,26 @@ async function signInWithEmail(email, password) {
   return cred.user;
 }
 
+// Popup-based Google sign-in (signInWithPopup) silently fails in Safari -- especially in
+// Private Browsing -- because it depends on the popup window sharing storage with the main
+// tab, which Safari's tracking prevention blocks. Redirect is Firebase's own recommended fix:
+// the whole page navigates to Google and back, so no cross-window storage access is needed.
 async function signInWithGoogle() {
   const provider = new GoogleAuthProvider();
-  const cred = await signInWithPopup(firebaseAuth, provider);
-  return cred.user;
+  await signInWithRedirect(firebaseAuth, provider);
+  // The browser is navigating away at this point -- nothing after this line runs. The result
+  // is picked up by getRedirectResult() below when the page reloads after returning from Google.
+}
+
+// Created once at module load so every caller shares the same outcome (Firebase only resolves
+// a real result on the first check per redirect). On a normal page visit (no pending redirect)
+// this just resolves to null. Register a .catch on it to be notified if a Google redirect
+// specifically failed -- e.g. "an account already exists with this email via a different
+// sign-in method" -- instead of the user landing back on the login page with no explanation.
+const redirectResult = getRedirectResult(firebaseAuth);
+
+function onGoogleRedirectError(callback) {
+  redirectResult.catch(callback);
 }
 
 async function signOutUser() {
@@ -97,7 +114,9 @@ function wireNavAuthUI() {
 
   onAuthChange((user) => {
     if (user) {
-      const label = user.displayName || user.email || 'Account';
+      // A full email address in the nav reads like an admin panel, not a game -- fall back to
+      // the part before the @ (still unique enough at a glance) rather than the raw address.
+      const label = user.displayName || (user.email ? user.email.split('@')[0] : 'Account');
       authLink.textContent = label + ' · Sign out';
       authLink.href = '#';
       authLink.onclick = async (e) => {
@@ -129,4 +148,5 @@ window.MMAuth = {
   onAuthChange,
   requireAuth,
   friendlyAuthError,
+  onGoogleRedirectError,
 };

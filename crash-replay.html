@@ -76,9 +76,9 @@
       </div>
     </div>
     <div class="note callout" style="margin-top:16px;">
-      <strong style="color:var(--text-primary);">Headline finding:</strong> Random Forest and XGBoost's directional accuracy, which beats or matches chance in calm 2017 conditions, flips to <em>significantly worse than random</em> during COVID (p = 0.0013 and p = 0.0078). ARIMA drops from 66.9% directional accuracy in the calm window to 31.4% in COVID. Only linear regression avoids becoming confidently wrong, it goes weak/silent instead, a genuinely different failure mode. This holds beyond the index too: a Random Forest/XGBoost run on RELIANCE.NS during COVID lands at 29.4% directional accuracy, also significant (p = 0.0033).
+      <strong style="color:var(--text-primary);">Headline finding:</strong> Random Forest and XGBoost's directional accuracy, which beats or matches chance in calm 2017 conditions, flips to <em>significantly worse than random</em> during COVID (p = 0.0013 and p = 0.0078). ARIMA drops from 66.9% directional accuracy in the calm window to 31.4% in COVID. Only linear regression avoids becoming confidently wrong, it goes weak/silent instead, a genuinely different failure mode. This holds beyond the index too: a Random Forest/XGBoost run on RELIANCE.NS during COVID lands at 29.4% directional accuracy, also significant (p = 0.0033). LSTM sits apart from all of them here: 41.2% directional accuracy, not statistically distinguishable from chance (p = 0.21) -- neither confidently right nor confidently wrong, unlike the tree models.
     </div>
-    <a class="btn-secondary" href="ml-lab.html" style="display:inline-block; margin-top:16px;">See the full 4-model × 3-window comparison →</a>
+    <a class="btn-secondary" href="ml-lab.html" style="display:inline-block; margin-top:16px;">See the full 5-model × 8-window comparison →</a>
   </section>
 
   <footer>
@@ -140,10 +140,15 @@
     MMApp.drawLineChart(document.getElementById('divChart'), [{ points: div.map((r,i)=>({x:i,y:r.total_value})), color: '#17D97A', width: 2 }], { gridLines: 3 });
 
     const covid = MM.ML_METRICS.bsesn.covid2020;
-    const rows = ['linear_regression','arima','random_forest','xgboost'].map(k => {
+    const rows = ['linear_regression','arima','random_forest','xgboost','lstm'].filter(k => covid[k]).map(k => {
       const m = covid[k];
       const ciTxt = m.ci ? `[${m.ci[0]}–${m.ci[1]}]` : '—';
-      const sigTxt = m.sig_worse ? `<span class="neg">worse than random (p=${m.p})</span>` : (m.ci ? '<span class="neu">not significant</span>' : '<span class="neu">not tested</span>');
+      let sigTxt = '<span class="neu">not tested</span>';
+      if (m.ci) {
+        if (m.sig_better) sigTxt = '<span class="pos">significantly better</span>';
+        else if (m.sig_worse) sigTxt = `<span class="neg">worse than random (p=${m.p})</span>`;
+        else sigTxt = '<span class="neu">not significant</span>';
+      }
       const accCls = m.dir_acc_pct >= 50 ? 'pos' : 'neg';
       return `<tr><td>${MM.MODEL_NAMES[k]}</td><td>${m.mae_pct}%</td><td>${m.rmse_pct}%</td><td class="${accCls}">${m.dir_acc_pct}%</td><td>${ciTxt}</td><td>${sigTxt}</td><td>${m.n}</td></tr>`;
     }).join('');
