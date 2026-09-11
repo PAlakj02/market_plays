@@ -29,7 +29,7 @@
   <section class="page" style="padding-top:36px;">
     <div class="section-head">
       <h2>Leaderboard</h2>
-      <p class="lede">Ranked by return on Standard and Full rounds -- pick a real start date on the <a href="portfolio.html" style="color:var(--gold); text-decoration:underline;">Portfolio</a> page, live through whatever the market actually did next, and your score lands here.</p>
+      <p class="lede">Ranked by return on Quick, Standard, and Full rounds -- play one on the <a href="portfolio.html" style="color:var(--gold); text-decoration:underline;">Portfolio</a> page, live through whatever the market actually did, and your score lands here.</p>
     </div>
 
     <div class="panel">
@@ -54,7 +54,7 @@
     import { collection, query, orderBy, limit, getDocs } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
     import { firebaseDb } from './assets/js/firebase-config.js';
 
-    const MODE_LABEL = { standard: 'Standard round', full: 'Full round' };
+    const MODE_LABEL = { quick: 'Quick round', standard: 'Standard round', full: 'Full round' };
     function eventTitle(id) {
       const ev = MM.EVENTS.find((e) => e.id === id);
       return ev ? ev.title : id;
@@ -77,7 +77,7 @@
       countLabel.textContent = runs.length + ' saved round' + (runs.length === 1 ? '' : 's');
       if (!runs.length) {
         document.getElementById('lbTable').innerHTML =
-          `<tbody><tr><td class="empty-note">No rounds saved yet -- be the first. Play a Standard or Full round on the Portfolio page.</td></tr></tbody>`;
+          `<tbody><tr><td class="empty-note">No rounds saved yet -- be the first. Play a round on the Portfolio page.</td></tr></tbody>`;
         return;
       }
 
@@ -89,6 +89,7 @@
           <td>${r.name || 'Player'}</td>
           <td>${MODE_LABEL[r.mode] || r.mode}</td>
           <td>${r.startDate} → ${r.endDate}</td>
+          <td>${MMApp.formatINR(r.startingCapital)}</td>
           <td class="${cls}">${MMApp.formatPct(r.returnPct)}</td>
           <td>${(r.maxDrawdownPct != null ? r.maxDrawdownPct.toFixed(1) : '—')}%</td>
           <td>${MMApp.formatINR(r.endValue)}</td>
@@ -96,7 +97,7 @@
         </tr>`;
       }).join('');
       document.getElementById('lbTable').innerHTML = `
-        <thead><tr><th>#</th><th>Player</th><th>Mode</th><th>Dates</th><th>Return</th><th>Max DD</th><th>End value</th><th>Real events hit</th></tr></thead>
+        <thead><tr><th>#</th><th>Player</th><th>Mode</th><th>Dates</th><th>Started with</th><th>Return</th><th>Max DD</th><th>Ended with</th><th>Real events hit</th></tr></thead>
         <tbody>${rows}</tbody>`;
     }
     render();

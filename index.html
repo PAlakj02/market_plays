@@ -223,7 +223,7 @@
           document.getElementById('cardPortfolioVal').textContent = MMApp.formatINR(last.endValue);
           document.getElementById('cardPortfolioVal').className = 'value ' + cls;
           document.getElementById('cardPortfolioDelta').textContent =
-            MMApp.formatPct(last.returnPct) + ' · last ' + (last.mode === 'full' ? 'full' : 'standard') + ' round';
+            MMApp.formatPct(last.returnPct) + ' · last ' + (last.mode || 'standard') + ' round';
         } catch (e) {
           console.error('MarketMinds: could not load last round for hero card', e);
         }

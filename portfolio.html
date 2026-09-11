@@ -13,12 +13,11 @@
   .mode-tab.active{ background:var(--green-dim); border-color:var(--green); color:var(--text-primary); }
   .mode-desc{ font-size:13px; color:var(--text-muted); margin-bottom:22px; max-width:640px; }
 
-  .setup-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:480px; }
-  .setup-row label{ font-size:12px; color:var(--text-secondary); display:block; margin-bottom:6px; }
-  .setup-row select, .setup-row input{ width:100%; background:var(--bg-raised); border:1px solid var(--card-border); border-radius:8px; padding:10px 12px; color:var(--text-primary); font-family:'IBM Plex Mono',monospace; font-size:14px; }
+  .setup-field{ max-width:240px; }
+  .setup-field label{ font-size:12px; color:var(--text-secondary); display:block; margin-bottom:6px; }
+  .setup-field select{ width:100%; background:var(--bg-raised); border:1px solid var(--card-border); border-radius:8px; padding:10px 12px; color:var(--text-primary); font-family:'IBM Plex Mono',monospace; font-size:14px; }
 
-  .balance-row{ display:grid; grid-template-columns: repeat(3, 1fr); gap:16px; margin-bottom:24px; }
-  .balance-row.with-return{ grid-template-columns: repeat(4, 1fr); }
+  .balance-row{ display:grid; grid-template-columns: repeat(4, 1fr); gap:16px; margin-bottom:24px; }
   .balance-card{ background:var(--card); border:1px solid var(--card-border); border-radius:14px; padding:20px 24px; }
   .balance-card .label{ font-size:12px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.06em; margin-bottom:8px; }
   .balance-card .value{ font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; }
@@ -50,7 +49,7 @@
   .modal-actions{ display:flex; gap:10px; }
   .modal-actions button{ flex:1; }
 
-  .results-modal{ width:560px; }
+  .results-modal{ width:560px; max-height:82vh; overflow-y:auto; }
   .results-modal .metric-row{ display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid var(--card-border); font-family:'IBM Plex Mono',monospace; font-size:13px; }
   .results-modal .event-block{ margin-top:16px; padding-top:14px; border-top:1px solid var(--card-border); }
   .results-modal .event-block h4{ font-size:13.5px; margin-bottom:8px; }
@@ -70,8 +69,6 @@
   .empty-note{ padding:24px; text-align:center; color:var(--text-muted); font-size:13px; }
   @media (max-width:900px){
     .balance-row{ grid-template-columns:1fr; }
-    .balance-row.with-return{ grid-template-columns:1fr; }
-    .setup-row{ grid-template-columns:1fr; }
     .picker-box{ flex-direction:column; align-items:stretch; text-align:center; }
     .holding-row, .holding-head{ grid-template-columns: 1fr 1fr; }
     .holding-row span:nth-child(n+4), .holding-head span:nth-child(n+4){ display:none; }
@@ -95,50 +92,44 @@
       <a href="ml-lab.html">ML Lab</a>
       <a href="leaderboard.html">Leaderboard</a>
     </div>
-    <a class="nav-cta" href="leaderboard.html" id="navCashBadge" title="View leaderboard" style="white-space:normal; text-align:right;">₹1,00,000 tokens</a>
+    <a class="nav-cta" href="leaderboard.html" id="navCashBadge" title="View leaderboard" style="white-space:normal; text-align:right;">Leaderboard</a>
   </nav>
 
   <section class="page" style="padding-top:36px;">
     <div class="section-head">
       <h2>Buy and sell like it's a real market.</h2>
-      <p class="lede">Real historical prices (2000–2026, pulled from the actual market). Free Play runs on a shared clock everyone sees the same way. Standard/Full rounds let you pick your own starting date and capital, then play through whatever the real market actually did next -- including any real crash along the way.</p>
+      <p class="lede">Every round is a sequence of real historical events -- randomly assigned, not something you schedule yourself. Pick your starting capital, hit start, and see how you'd have actually done through whatever the market really did.</p>
     </div>
 
     <div class="mode-tabs" id="modeTabs">
-      <button class="mode-tab active" data-mode="free">Free Play</button>
+      <button class="mode-tab active" data-mode="quick">Quick Round</button>
       <button class="mode-tab" data-mode="standard">Standard Round</button>
       <button class="mode-tab" data-mode="full">Full Round</button>
     </div>
-    <p class="mode-desc" id="modeDesc">Browse and trade anytime against the shared live clock. No score, no time limit.</p>
+    <p class="mode-desc" id="modeDesc"></p>
 
-    <div class="panel" id="roundSetupPanel" style="display:none; margin-bottom:24px;">
+    <div class="panel" id="roundSetupPanel" style="margin-bottom:24px;">
       <h3 style="margin-bottom:6px;">Start a round</h3>
       <p class="note" id="roundSetupNote" style="margin-bottom:18px;"></p>
-      <div class="setup-row">
-        <div>
-          <label>Starting capital</label>
-          <select id="roundCapital">
-            <option value="50000">₹50,000</option>
-            <option value="100000" selected>₹1,00,000</option>
-            <option value="250000">₹2,50,000</option>
-            <option value="500000">₹5,00,000</option>
-          </select>
-        </div>
-        <div>
-          <label>Start date</label>
-          <input type="date" id="roundStartDate">
-        </div>
+      <div class="setup-field">
+        <label>Starting capital</label>
+        <select id="roundCapital">
+          <option value="50000">₹50,000</option>
+          <option value="100000" selected>₹1,00,000</option>
+          <option value="250000">₹2,50,000</option>
+          <option value="500000">₹5,00,000</option>
+        </select>
       </div>
       <button class="btn-primary" id="roundStartBtn" style="margin-top:16px;">Start round</button>
     </div>
 
-    <div class="clock-strip" id="clockStripEl">
+    <div class="clock-strip" id="clockStripEl" style="display:none;">
       <span>Market date: <span class="date" id="clockDate">—</span></span>
       <span id="clockPhase">—</span>
       <div class="clock-bar"><div class="fill" id="clockFill" style="width:0%"></div></div>
     </div>
 
-    <div class="balance-row" id="balanceRowEl">
+    <div class="balance-row" id="balanceRowEl" style="display:none;">
       <div class="balance-card">
         <div class="label">Token balance</div>
         <div class="value" id="cashVal">—</div>
@@ -151,13 +142,13 @@
         <div class="label">Total worth</div>
         <div class="value up" id="totalVal">—</div>
       </div>
-      <div class="balance-card" id="returnCard" style="display:none;">
+      <div class="balance-card">
         <div class="label">Return vs start</div>
         <div class="value" id="returnVal">—</div>
       </div>
     </div>
 
-    <div class="row equal" id="tradingAreaEl">
+    <div class="row equal" id="tradingAreaEl" style="display:none;">
       <div class="panel">
         <div class="panel-head"><h3>Stock browser</h3><span class="badge neutral" id="tickerCount">— assets</span></div>
         <select class="picker-select" id="assetSelect"></select>
@@ -179,13 +170,10 @@
       </div>
     </div>
 
-    <div class="panel" id="txPanelEl" style="margin-top:20px;">
+    <div class="panel" id="txPanelEl" style="margin-top:20px; display:none;">
       <div class="panel-head">
         <h3>Transaction history</h3>
-        <span>
-          <button class="btn-small" id="endRoundBtn" style="display:none;">End round now</button>
-          <button class="btn-small" id="resetBtn">Reset account</button>
-        </span>
+        <button class="btn-small" id="endRoundBtn">End chapter now</button>
       </div>
       <div class="table-scroll"><table class="data-table" id="txTable"></table></div>
     </div>
@@ -212,7 +200,20 @@
     </div>
   </div>
 
-  <!-- Round results modal -->
+  <!-- Per-chapter (per-event) report -->
+  <div class="modal-backdrop" id="chapterBackdrop">
+    <div class="modal results-modal">
+      <h3 id="chapterTitle">Chapter complete</h3>
+      <div class="sub" id="chapterSub">—</div>
+      <div id="chapterMetrics"></div>
+      <div id="chapterMl"></div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn-primary" id="chapterContinueBtn" style="width:100%;">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Final round results -->
   <div class="modal-backdrop" id="resultsBackdrop">
     <div class="modal results-modal">
       <h3 id="resultsTitle">Round complete</h3>
@@ -252,33 +253,44 @@
     };
     function label(t) { return TICKER_LABELS[t] || t; }
     function fmt(n) { return MMApp.formatINR(n, { decimals: 2 }); }
+    const MODEL_LIST = ['linear_regression', 'arima', 'random_forest', 'xgboost', 'lstm'];
+    function mlTableHtml(eventId) {
+      const ml = MM.ML_METRICS.bsesn[eventId];
+      if (!ml) return '';
+      const rows = MODEL_LIST.filter((k) => ml[k]).map((k) => {
+        const m = ml[k];
+        const cls = m.dir_acc_pct >= 50 ? 'pos' : 'neg';
+        return `<tr><td>${MM.MODEL_NAMES[k]}</td><td class="${cls}">${m.dir_acc_pct}%</td></tr>`;
+      }).join('');
+      return `<div class="event-block">
+        <p class="note" style="margin-bottom:6px;">What the ML models' directional accuracy actually was on this exact window:</p>
+        <table><thead><tr><th>Model</th><th>Dir. accuracy</th></tr></thead><tbody>${rows}</tbody></table>
+      </div>`;
+    }
 
     const MODE_DESC = {
-      free: 'Browse and trade anytime against the shared live clock. No score, no time limit.',
-      standard: 'Pick a starting date and capital, then play roughly a year of real trading days. Ends with a score you can save to the leaderboard.',
-      full: 'Pick a starting date and capital, then play everything the real market actually did from there through 2026. Longer, and more likely to run into more than one real crash.',
+      quick: '4-5 real historical events, randomly picked from the dataset -- the fastest way to see a real crash play out.',
+      standard: 'Every real event inside a randomly-chosen 15-year stretch of history (2000-2026), played back to back.',
+      full: 'All of the real events in the dataset, in chronological order, from 2000 through to the end of real history.',
     };
-    const STANDARD_ROUND_DAYS = 252;
-    const TARGET_ROUND_MS = 60000;
+    const MODE_LABEL = { quick: 'Quick round', standard: 'Standard round', full: 'Full round' };
+    const EVENT_LEAD_DAYS = 20, EVENT_TAIL_DAYS = 10;
+    const TARGET_CHAPTER_MS = 20000;
 
-    let mode = 'free';
+    let mode = 'quick';
     let prevPrices = {};
     let modalMode = null, modalTicker = null;
 
-    // --- Round state -------------------------------------------------
-    let round = null; // { mode, dates, idx, capital, account, valueHistory, eventsSeen, timer, ended }
+    // --- Round state ----------------------------------------------------
+    // A round is a sequence of "chapters" -- each one a real historical event (plus a short
+    // lead-in/tail), played back to back on one continuous portfolio. Which events, and how
+    // many, depends on the mode (see buildChapters).
+    let round = null; // { mode, capital, chapters, chapterIdx, idx, account, valueHistory, chapterResults, timer, ended, awaitingContinue }
 
-    function activeAccount() {
-      return mode === 'free' ? MMAccount.load() : round.account;
-    }
-    function activeDate() {
-      return mode === 'free' ? null : round.dates[round.idx];
-    }
-    function activePrice(t) {
-      return mode === 'free' ? MMMarket.getPrice(t) : MMMarket.getRealPriceOnDate(t, activeDate());
-    }
+    function currentChapter() { return round.chapters[round.chapterIdx]; }
+    function activeDate() { return currentChapter().dates[round.idx]; }
+    function activePrice(t) { return MMMarket.getRealPriceOnDate(t, activeDate()); }
     function activeAllPrices() {
-      if (mode === 'free') return MMMarket.getAllPrices();
       const d = activeDate();
       const out = {};
       MMMarket.tickers.forEach((t) => { out[t] = MMMarket.getRealPriceOnDate(t, d); });
@@ -310,124 +322,147 @@
       acc.transactions.push({ type: 'sell', ticker, shares, price, proceeds, timestamp: Date.now() });
     }
 
+    // --- Chapter selection, per mode -------------------------------------------------
+    function buildChapters(roundMode) {
+      const events = MM.EVENTS.slice();
+      let chosen;
+      if (roundMode === 'quick') {
+        const shuffled = events.slice().sort(() => Math.random() - 0.5);
+        const n = Math.min(events.length, 4 + Math.floor(Math.random() * 2)); // 4 or 5
+        chosen = shuffled.slice(0, n).sort((a, b) => a.start.localeCompare(b.start));
+      } else if (roundMode === 'standard') {
+        const spanYears = 15;
+        const firstYear = parseInt(MMMarket.firstRealDate.slice(0, 4), 10);
+        const lastYear = parseInt(MMMarket.lastRealDate.slice(0, 4), 10);
+        const maxStartYear = Math.max(firstYear, lastYear - spanYears);
+        const startYear = firstYear + Math.floor(Math.random() * (maxStartYear - firstYear + 1));
+        const winStart = startYear + '-01-01', winEnd = (startYear + spanYears) + '-01-01';
+        chosen = events.filter((e) => e.start < winEnd && e.end > winStart).sort((a, b) => a.start.localeCompare(b.start));
+        if (!chosen.length) chosen = events.slice().sort((a, b) => a.start.localeCompare(b.start)).slice(0, 3);
+      } else {
+        chosen = events.slice().sort((a, b) => a.start.localeCompare(b.start));
+      }
+      return chosen
+        .map((ev) => ({ event: ev, dates: MMMarket.getRealDatesPadded(ev.start, ev.end, EVENT_LEAD_DAYS, EVENT_TAIL_DAYS) }))
+        .filter((c) => c.dates.length >= 2);
+    }
+
     // --- Mode switching ------------------------------------------------
     function setMode(newMode) {
       if (mode === newMode) return;
-      if (round && round.timer) pauseRoundTimer();
+      if (round && !round.ended) { pauseRoundTimer(); round = null; }
       mode = newMode;
       document.querySelectorAll('.mode-tab').forEach((b) => b.classList.toggle('active', b.dataset.mode === mode));
       document.getElementById('modeDesc').textContent = MODE_DESC[mode];
-
-      if (mode === 'free') {
-        document.getElementById('roundSetupPanel').style.display = 'none';
-        showPlayChrome();
-        document.getElementById('balanceRowEl').classList.remove('with-return');
-        document.getElementById('returnCard').style.display = 'none';
-        document.getElementById('endRoundBtn').style.display = 'none';
-        document.getElementById('resetBtn').style.display = '';
-        renderAll();
-        return;
-      }
-
-      if (round && round.mode === mode && !round.ended) {
-        showPlayChrome();
-        document.getElementById('roundSetupPanel').style.display = 'none';
-        resumeRoundTimer();
-      } else {
-        round = null;
-        showSetupChrome();
-      }
+      showSetupChrome();
     }
 
     function showSetupChrome() {
       document.getElementById('roundSetupPanel').style.display = '';
-      document.getElementById('roundSetupNote').textContent = mode === 'standard'
-        ? `About ${STANDARD_ROUND_DAYS} trading days of real market history, starting wherever you pick.`
-        : 'Every real trading day from your start date through the end of real history (2026).';
+      document.getElementById('roundSetupNote').textContent = MODE_DESC[mode];
       document.getElementById('clockStripEl').style.display = 'none';
       document.getElementById('balanceRowEl').style.display = 'none';
       document.getElementById('tradingAreaEl').style.display = 'none';
       document.getElementById('txPanelEl').style.display = 'none';
-      const startInput = document.getElementById('roundStartDate');
-      if (MMMarket.loaded) {
-        startInput.min = MMMarket.firstRealDate;
-        startInput.max = MMMarket.lastRealDate;
-        if (!startInput.value) startInput.value = MMMarket.firstRealDate;
-      }
     }
-
     function showPlayChrome() {
       document.getElementById('roundSetupPanel').style.display = 'none';
       document.getElementById('clockStripEl').style.display = '';
       document.getElementById('balanceRowEl').style.display = '';
       document.getElementById('tradingAreaEl').style.display = '';
       document.getElementById('txPanelEl').style.display = '';
-      if (mode !== 'free') {
-        document.getElementById('balanceRowEl').classList.add('with-return');
-        document.getElementById('returnCard').style.display = '';
-        document.getElementById('endRoundBtn').style.display = '';
-        document.getElementById('resetBtn').style.display = 'none';
-      }
     }
 
-    // --- Round lifecycle -------------------------------------------------
-    function startRound(startDateStr, capital, roundMode) {
-      const snapped = MMMarket.nearestRealDate(startDateStr) || MMMarket.firstRealDate;
-      const allDates = MMMarket.getRealDatesBetween(snapped, MMMarket.lastRealDate);
-      const dates = roundMode === 'standard' ? allDates.slice(0, STANDARD_ROUND_DAYS + 1) : allDates;
-      if (dates.length < 2) { MMApp.toast('Pick an earlier start date -- not enough real history left after that point.'); return; }
-
+    // --- Round / chapter lifecycle -------------------------------------------------
+    function startRound(capital, roundMode) {
+      const chapters = buildChapters(roundMode);
+      if (!chapters.length) { MMApp.toast('Could not build a round -- try again.'); return; }
       round = {
-        mode: roundMode, dates, idx: 0, capital,
+        mode: roundMode, capital, chapters, chapterIdx: 0, idx: 0,
         account: { cash: capital, holdings: {}, transactions: [] },
-        valueHistory: [], eventsSeen: new Set(), timer: null, ended: false,
+        valueHistory: [], chapterResults: [], timer: null, ended: false, awaitingContinue: false,
       };
-      round.tickMs = Math.max(15, Math.min(300, TARGET_ROUND_MS / dates.length));
-
       showPlayChrome();
+      beginChapterPlayback();
+      MMApp.toast('Round started -- ' + chapters.length + ' event' + (chapters.length === 1 ? '' : 's') + ' ahead');
+    }
+
+    function beginChapterPlayback() {
+      const ch = currentChapter();
+      round.idx = 0;
+      ch.tickMs = Math.max(15, Math.min(200, TARGET_CHAPTER_MS / ch.dates.length));
+      ch.notifiedEvent = false;
+      const prices0 = activeAllPrices();
+      ch.startValue = round.account.cash + MMAccount.holdingsWorth(round.account, prices0);
       renderAll();
-      checkForEvent();
       recordValueHistory();
       resumeRoundTimer();
-      MMApp.toast('Round started -- ' + fmt(capital) + ' from ' + dates[0]);
     }
 
     function resumeRoundTimer() {
-      if (!round || round.timer || round.ended) return;
-      round.timer = setInterval(roundTick, round.tickMs);
+      if (!round || round.timer || round.ended || round.awaitingContinue) return;
+      round.timer = setInterval(roundTick, currentChapter().tickMs);
     }
     function pauseRoundTimer() {
       if (round && round.timer) { clearInterval(round.timer); round.timer = null; }
     }
     function roundTick() {
-      if (!round || round.ended) return;
-      if (round.idx >= round.dates.length - 1) { endRound(); return; }
+      if (!round || round.ended || round.awaitingContinue) return;
+      const ch = currentChapter();
+      if (round.idx >= ch.dates.length - 1) { finishChapter(); return; }
       round.idx++;
       renderAll();
-      checkForEvent();
+      maybeNotifyEvent();
       recordValueHistory();
     }
     function recordValueHistory() {
       const prices = activeAllPrices();
       const stockVal = MMAccount.holdingsWorth(round.account, prices);
-      round.valueHistory.push({ date: round.dates[round.idx], total_value: round.account.cash + stockVal });
+      round.valueHistory.push({ date: activeDate(), total_value: round.account.cash + stockVal });
     }
-    function checkForEvent() {
-      const ev = MM.eventForDate(round.dates[round.idx]);
-      if (ev && !round.eventsSeen.has(ev.id)) {
-        round.eventsSeen.add(ev.id);
-        showCrashToast(ev);
+    function maybeNotifyEvent() {
+      const ch = currentChapter();
+      if (!ch.notifiedEvent && activeDate() >= ch.event.start) {
+        ch.notifiedEvent = true;
+        showCrashToast(ch.event);
       }
     }
-    function endRound() {
+
+    function finishChapter() {
       pauseRoundTimer();
+      const ch = currentChapter();
+      const prices = activeAllPrices();
+      const endValue = round.account.cash + MMAccount.holdingsWorth(round.account, prices);
+      const returnPct = (endValue / ch.startValue - 1) * 100;
+      const benchStart = MM.getIndexValue(ch.dates[0]);
+      const benchEnd = MM.getIndexValue(ch.dates[ch.dates.length - 1]);
+      const benchmarkPct = (benchEnd / benchStart - 1) * 100;
+      const result = { event: ch.event, startValue: ch.startValue, endValue, returnPct, benchmarkPct };
+      round.chapterResults.push(result);
+      round.awaitingContinue = true;
+      const isLast = round.chapterIdx === round.chapters.length - 1;
+      showChapterReport(result, isLast);
+    }
+
+    document.getElementById('chapterContinueBtn').addEventListener('click', () => {
+      document.getElementById('chapterBackdrop').classList.remove('show');
+      round.awaitingContinue = false;
+      if (round.chapterIdx === round.chapters.length - 1) {
+        endRound();
+      } else {
+        round.chapterIdx++;
+        beginChapterPlayback();
+      }
+    });
+
+    function endRound() {
       round.ended = true;
       renderAll();
       showResults();
     }
 
     document.getElementById('endRoundBtn').addEventListener('click', () => {
-      if (round && !round.ended) endRound();
+      if (round && !round.ended && !round.awaitingContinue) finishChapter();
     });
 
     // --- Crash/rally toast -------------------------------------------------
@@ -443,17 +478,32 @@
       toastTimer = setTimeout(() => el.classList.remove('show'), 7000);
     }
 
-    // --- Round results -------------------------------------------------
+    // --- Per-chapter report -------------------------------------------------
+    function showChapterReport(result, isLast) {
+      const ev = result.event;
+      document.getElementById('chapterTitle').textContent = (ev.badge === 'crash' ? 'Crash survived: ' : 'Rally ridden: ') + ev.title;
+      document.getElementById('chapterSub').textContent = ev.start + ' → ' + ev.end + ' · ' + ev.short;
+      const cls = result.returnPct >= 0 ? 'pos' : 'neg';
+      const vsCls = (result.returnPct - result.benchmarkPct) >= 0 ? 'pos' : 'neg';
+      document.getElementById('chapterMetrics').innerHTML = `
+        <div class="metric-row"><span>Your return, this chapter</span><span class="${cls}">${MMApp.formatPct(result.returnPct)}</span></div>
+        <div class="metric-row"><span>Real SENSEX move, same window</span><span>${MMApp.formatPct(result.benchmarkPct)}</span></div>
+        <div class="metric-row"><span>You vs. the index</span><span class="${vsCls}">${MMApp.formatPct(result.returnPct - result.benchmarkPct)}</span></div>`;
+      document.getElementById('chapterMl').innerHTML = mlTableHtml(ev.id);
+      document.getElementById('chapterContinueBtn').textContent = isLast ? 'See final results' : 'Continue to next chapter →';
+      document.getElementById('chapterBackdrop').classList.add('show');
+    }
+
+    // --- Final round results -------------------------------------------------
     function showResults() {
       const metrics = MMPortfolio.computeMetrics(round.valueHistory);
-      const startIdxVal = MM.getIndexValue(round.dates[0]);
-      const endIdxVal = MM.getIndexValue(round.dates[round.dates.length - 1]);
-      const benchmarkPct = (endIdxVal / startIdxVal - 1) * 100;
+      const first = round.chapters[0], last = round.chapters[round.chapters.length - 1];
+      const startDate = first.dates[0], endDate = last.dates[last.dates.length - 1];
+      const benchmarkPct = (MM.getIndexValue(endDate) / MM.getIndexValue(startDate) - 1) * 100;
 
-      document.getElementById('resultsTitle').textContent =
-        (round.mode === 'standard' ? 'Standard round complete' : 'Full round complete');
+      document.getElementById('resultsTitle').textContent = MODE_LABEL[round.mode] + ' complete';
       document.getElementById('resultsSub').textContent =
-        round.dates[0] + ' → ' + round.dates[round.dates.length - 1] + ' · started with ' + fmt(round.capital);
+        startDate + ' → ' + endDate + ' · ' + round.chapters.length + ' event' + (round.chapters.length === 1 ? '' : 's') + ' · started with ' + fmt(round.capital);
 
       const retCls = metrics.total_return_pct >= 0 ? 'pos' : 'neg';
       const vsCls = (metrics.total_return_pct - benchmarkPct) >= 0 ? 'pos' : 'neg';
@@ -464,33 +514,21 @@
         <div class="metric-row"><span>Max drawdown</span><span class="neg">${metrics.max_drawdown_pct.toFixed(1)}%</span></div>
         <div class="metric-row"><span>End value</span><span>${fmt(metrics.end_value)}</span></div>`;
 
-      const eventIds = [...round.eventsSeen];
-      if (!eventIds.length) {
-        document.getElementById('resultsEvents').innerHTML =
-          '<div class="event-block"><p class="note">No real crash or rally window fell inside this round -- try a different start date to run into one.</p></div>';
-      } else {
-        document.getElementById('resultsEvents').innerHTML = eventIds.map((id) => {
-          const ev = MM.EVENTS.find((e) => e.id === id);
-          const ml = MM.ML_METRICS.bsesn[id];
-          const modelRows = ml ? ['linear_regression', 'arima', 'random_forest', 'xgboost', 'lstm'].filter((k) => ml[k]).map((k) => {
-            const m = ml[k];
-            const cls = m.dir_acc_pct >= 50 ? 'pos' : 'neg';
-            return `<tr><td>${MM.MODEL_NAMES[k]}</td><td class="${cls}">${m.dir_acc_pct}%</td></tr>`;
-          }).join('') : '';
-          return `<div class="event-block">
-            <h4>${ev.badge === 'crash' ? '▼' : '▲'} ${ev.title} <span class="${ev.badge === 'crash' ? 'neg' : 'pos'}">${MMApp.formatPct(ev.realReturnPct)}</span></h4>
-            <p class="note" style="margin-bottom:8px;">${ev.short}</p>
-            ${ml ? `<p class="note" style="margin-bottom:6px;">What the ML models' directional accuracy looked like on this exact window (from the ML Lab):</p>
-            <table><thead><tr><th>Model</th><th>Dir. accuracy</th></tr></thead><tbody>${modelRows}</tbody></table>` : ''}
-          </div>`;
-        }).join('');
-      }
+      document.getElementById('resultsEvents').innerHTML = round.chapterResults.map((r) => {
+        const ev = r.event;
+        const rCls = r.returnPct >= 0 ? 'pos' : 'neg';
+        return `<div class="event-block">
+          <h4>${ev.badge === 'crash' ? '▼' : '▲'} ${ev.title} <span class="${rCls}">your return: ${MMApp.formatPct(r.returnPct)}</span></h4>
+          <p class="note" style="margin-bottom:8px;">${ev.short} Real index move: ${MMApp.formatPct(ev.realReturnPct)}.</p>
+          ${mlTableHtml(ev.id)}
+        </div>`;
+      }).join('');
 
       const saveRow = document.getElementById('resultsSaveRow');
       const user = window.MMAuth && MMAuth.getCurrentUser();
       if (user) {
         saveRow.innerHTML = `<button class="btn-primary" id="saveLbBtn" style="width:100%;">Save to leaderboard</button><div class="err" id="saveLbErr"></div>`;
-        document.getElementById('saveLbBtn').addEventListener('click', () => saveToLeaderboard(metrics, benchmarkPct, eventIds));
+        document.getElementById('saveLbBtn').addEventListener('click', () => saveToLeaderboard(metrics, benchmarkPct, startDate, endDate));
       } else {
         saveRow.innerHTML = `<p class="note">Sign in to save this run to the leaderboard.</p><a class="btn-secondary" href="login.html?return=portfolio.html" style="display:inline-block;">Sign in</a>`;
       }
@@ -501,7 +539,7 @@
       document.getElementById('resultsBackdrop').classList.remove('show');
     });
 
-    async function saveToLeaderboard(metrics, benchmarkPct, eventIds) {
+    async function saveToLeaderboard(metrics, benchmarkPct, startDate, endDate) {
       const btn = document.getElementById('saveLbBtn');
       const errEl = document.getElementById('saveLbErr');
       btn.disabled = true;
@@ -516,14 +554,13 @@
           uid: user.uid,
           name: user.displayName || (user.email ? user.email.split('@')[0] : 'Player'),
           mode: round.mode,
-          startDate: round.dates[0],
-          endDate: round.dates[round.dates.length - 1],
+          startDate, endDate,
           startingCapital: round.capital,
           endValue: metrics.end_value,
           returnPct: metrics.total_return_pct,
           maxDrawdownPct: metrics.max_drawdown_pct,
           benchmarkReturnPct: Math.round(benchmarkPct * 100) / 100,
-          crashesHit: eventIds,
+          crashesHit: round.chapterResults.map((r) => r.event.id),
           createdAt: serverTimestamp(),
         });
         btn.textContent = 'Saved ✓';
@@ -540,27 +577,17 @@
     });
     document.getElementById('roundStartBtn').addEventListener('click', () => {
       const capital = parseInt(document.getElementById('roundCapital').value, 10);
-      const startDate = document.getElementById('roundStartDate').value;
-      if (!startDate) { MMApp.toast('Pick a start date first.'); return; }
-      startRound(startDate, capital, mode);
+      startRound(capital, mode);
     });
 
-    // --- Rendering (shared across Free Play and an active round) -------
+    // --- Rendering -------------------------------------------------
     function renderClock() {
-      if (mode === 'free') {
-        const info = MMMarket.getClockInfo();
-        if (!info) return;
-        document.getElementById('clockDate').textContent = info.simulatedDate;
-        document.getElementById('clockPhase').textContent = info.isReal
-          ? `Real history · loop ${info.loop + 1}`
-          : `Simulated conditions · loop ${info.loop + 1}`;
-        document.getElementById('clockFill').style.width = info.progressPct.toFixed(2) + '%';
-      } else if (round) {
-        document.getElementById('clockDate').textContent = round.dates[round.idx];
-        document.getElementById('clockPhase').textContent =
-          `Day ${round.idx + 1} of ${round.dates.length} · ${round.mode === 'standard' ? 'Standard round' : 'Full round'}`;
-        document.getElementById('clockFill').style.width = (100 * round.idx / (round.dates.length - 1)).toFixed(2) + '%';
-      }
+      if (!round) return;
+      const ch = currentChapter();
+      document.getElementById('clockDate').textContent = activeDate();
+      document.getElementById('clockPhase').textContent =
+        `Chapter ${round.chapterIdx + 1} of ${round.chapters.length}: ${ch.event.title} · Day ${round.idx + 1} of ${ch.dates.length}`;
+      document.getElementById('clockFill').style.width = (100 * round.idx / (ch.dates.length - 1)).toFixed(2) + '%';
     }
 
     let assetSelectPopulated = false;
@@ -570,6 +597,10 @@
       document.getElementById('assetSelect').innerHTML =
         tickers.map((t) => `<option value="${t}">${label(t)} (${t})</option>`).join('');
       assetSelectPopulated = true;
+    }
+
+    function tradingLocked() {
+      return !round || round.ended || round.awaitingContinue;
     }
 
     function renderPicker() {
@@ -584,11 +615,11 @@
       const chgEl = document.getElementById('pickerChg');
       chgEl.textContent = t + (prev != null && price != null ? ' ' + (price >= prev ? '▲' : '▼') : '');
       chgEl.className = 'picker-chg ' + chgCls;
-      document.getElementById('pickerBuyBtn').disabled = price == null || (mode !== 'free' && round.ended);
+      document.getElementById('pickerBuyBtn').disabled = price == null || tradingLocked();
     }
 
     function renderHoldings() {
-      const acc = activeAccount();
+      const acc = round.account;
       const tickers = Object.keys(acc.holdings);
       const list = document.getElementById('holdingsList');
       if (!tickers.length) {
@@ -607,13 +638,13 @@
           <span>${fmt(h.avgPrice)}</span>
           <span>${fmt(cur)}</span>
           <span class="${cls}">${fmt(gl)} (${MMApp.formatPct(glPct)})</span>
-          <button class="btn-small" data-action="sell" data-ticker="${t}" ${mode !== 'free' && round.ended ? 'disabled' : ''}>Sell</button>
+          <button class="btn-small" data-action="sell" data-ticker="${t}" ${tradingLocked() ? 'disabled' : ''}>Sell</button>
         </div>`;
       }).join('');
     }
 
     function renderTx() {
-      const acc = activeAccount();
+      const acc = round.account;
       const rows = acc.transactions.slice().reverse().slice(0, 50).map((tx) => {
         const cls = tx.type === 'buy' ? 'neg' : 'pos';
         const amt = tx.type === 'buy' ? tx.cost : tx.proceeds;
@@ -631,40 +662,34 @@
     }
 
     function renderBalances() {
-      const acc = activeAccount();
+      const acc = round.account;
       const prices = activeAllPrices();
       const stockVal = MMAccount.holdingsWorth(acc, prices);
+      const totalVal = acc.cash + stockVal;
       document.getElementById('cashVal').textContent = fmt(acc.cash);
       document.getElementById('stockVal').textContent = fmt(stockVal);
-      document.getElementById('totalVal').textContent = fmt(acc.cash + stockVal);
-      if (mode === 'free') {
-        document.getElementById('navCashBadge').textContent =
-          MMApp.formatINR(acc.cash) + ' tokens · ' + MMApp.formatINR(stockVal) + ' stocks';
-      } else {
-        const totalVal = acc.cash + stockVal;
-        const retPct = (totalVal / round.capital - 1) * 100;
-        const el = document.getElementById('returnVal');
-        el.textContent = MMApp.formatPct(retPct);
-        el.className = 'value ' + (retPct >= 0 ? 'up' : 'down');
-      }
+      document.getElementById('totalVal').textContent = fmt(totalVal);
+      const retPct = (totalVal / round.capital - 1) * 100;
+      const el = document.getElementById('returnVal');
+      el.textContent = MMApp.formatPct(retPct);
+      el.className = 'value ' + (retPct >= 0 ? 'up' : 'down');
+      document.getElementById('navCashBadge').textContent = MMApp.formatINR(totalVal) + ' total';
     }
 
     function renderAll() {
-      if (!MMMarket.loaded) return;
-      if (mode !== 'free' && !round) return;
+      if (!MMMarket.loaded || !round) return;
       renderClock();
       renderPicker();
       renderHoldings();
       renderTx();
       renderBalances();
-      const snap = activeAllPrices();
-      prevPrices = snap;
+      prevPrices = activeAllPrices();
     }
 
-    // --- Buy/sell modal (shared) -------------------------------------------------
-    function openModal(mode2, ticker) {
-      modalMode = mode2; modalTicker = ticker;
-      document.getElementById('modalTitle').textContent = (mode2 === 'buy' ? 'Buy ' : 'Sell ') + label(ticker);
+    // --- Buy/sell modal -------------------------------------------------
+    function openModal(m, ticker) {
+      modalMode = m; modalTicker = ticker;
+      document.getElementById('modalTitle').textContent = (m === 'buy' ? 'Buy ' : 'Sell ') + label(ticker);
       document.getElementById('modalSub').textContent = ticker;
       document.getElementById('modalQty').value = 1;
       document.getElementById('modalErr').textContent = '';
@@ -680,7 +705,7 @@
       const qty = Math.max(0, parseFloat(document.getElementById('modalQty').value) || 0);
       const price = activePrice(modalTicker);
       const total = qty * price;
-      const acc = activeAccount();
+      const acc = round.account;
       const verb = modalMode === 'buy' ? 'Cost' : 'Proceeds';
       let extra = '';
       if (modalMode === 'buy') extra = `Balance after: ${fmt(acc.cash - total)}`;
@@ -701,13 +726,8 @@
       const errEl = document.getElementById('modalErr');
       if (!qty || qty <= 0) { errEl.textContent = 'Enter a valid quantity.'; return; }
       try {
-        if (mode === 'free') {
-          if (modalMode === 'buy') MMAccount.buy(modalTicker, qty, price);
-          else MMAccount.sell(modalTicker, qty, price);
-        } else {
-          if (modalMode === 'buy') roundBuy(modalTicker, qty, price);
-          else roundSell(modalTicker, qty, price);
-        }
+        if (modalMode === 'buy') roundBuy(modalTicker, qty, price);
+        else roundSell(modalTicker, qty, price);
         const toastMsg = (modalMode === 'buy' ? 'Bought ' : 'Sold ') + qty + ' ' + modalTicker;
         closeModal();
         renderAll();
@@ -720,23 +740,16 @@
     document.getElementById('assetSelect').addEventListener('change', renderPicker);
     document.getElementById('pickerBuyBtn').addEventListener('click', () => {
       const t = document.getElementById('assetSelect').value;
-      if (t) openModal('buy', t);
+      if (t && !tradingLocked()) openModal('buy', t);
     });
     document.getElementById('holdingsList').addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-action="sell"]');
       if (btn && !btn.disabled) openModal('sell', btn.dataset.ticker);
     });
-    document.getElementById('resetBtn').addEventListener('click', () => {
-      if (confirm('Reset your account back to ₹1,00,000 and clear all holdings/history?')) {
-        MMAccount.reset();
-        renderAll();
-        MMApp.toast('Account reset');
-      }
-    });
 
-    Promise.all([MMMarket.load(), MMAccount.ready]).then(() => {
-      renderAll();
-      setInterval(() => { if (mode === 'free') renderAll(); }, 6000);
+    MMMarket.load().then(() => {
+      showSetupChrome();
+      document.getElementById('modeDesc').textContent = MODE_DESC[mode];
     }).catch((e) => {
       console.error('MarketMinds: failed to load market data', e);
       MMApp.toast('Could not load market data -- try refreshing the page.', 6000);

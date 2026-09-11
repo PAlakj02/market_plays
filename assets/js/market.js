@@ -189,6 +189,16 @@
     return REAL.dates[nearestRealIndex(dateStr)];
   }
 
+  // Real dates spanning [startDate, endDate] padded by leadDays/tailDays trading days on
+  // either side (clamped to the real dataset's bounds). Used to build a "chapter" around a
+  // historical event -- a few weeks of lead-in before it starts, a short tail after it ends.
+  function getRealDatesPadded(startDate, endDate, leadDays, tailDays) {
+    if (!REAL) return [];
+    const si = Math.max(0, nearestRealIndex(startDate) - leadDays);
+    const ei = Math.min(REAL.dates.length - 1, nearestRealIndex(endDate) + tailDays);
+    return REAL.dates.slice(si, ei + 1);
+  }
+
   function getAllPrices(nowMs) {
     const out = {};
     if (!REAL) return out;
@@ -209,7 +219,7 @@
   }
 
   global.MMMarket = {
-    load, getPrice, getAllPrices, getClockInfo, getRealPriceOnDate, getRealDatesBetween, nearestRealDate,
+    load, getPrice, getAllPrices, getClockInfo, getRealPriceOnDate, getRealDatesBetween, nearestRealDate, getRealDatesPadded,
     get tickers() { return REAL ? REAL.tickers : []; },
     get loaded() { return !!REAL; },
     get firstRealDate() { return REAL ? REAL.dates[0] : null; },
