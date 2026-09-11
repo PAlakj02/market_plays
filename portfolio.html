@@ -27,16 +27,12 @@
   .clock-bar{ height:4px; background:var(--card-border); border-radius:2px; overflow:hidden; width:160px; }
   .clock-bar .fill{ height:100%; background:var(--green); }
 
-  .search-row{ display:flex; gap:10px; margin-bottom:16px; }
-  .search-row input{ flex:1; background:var(--card); border:1px solid var(--card-border); border-radius:8px; padding:10px 14px; color:var(--text-primary); font-family:'Inter',sans-serif; font-size:14px; }
-  .search-row input:focus{ outline:1px solid var(--green-dim); }
-
-  .asset-row{ display:grid; grid-template-columns: 1fr 120px 100px 90px; align-items:center; gap:12px; padding:12px 14px; border-bottom:1px solid var(--card-border); }
-  .asset-row:last-child{ border-bottom:none; }
-  .asset-row .name{ font-family:'IBM Plex Mono',monospace; font-size:13px; }
-  .asset-row .name .sub{ display:block; font-size:11px; color:var(--text-muted); margin-top:2px; }
-  .asset-row .price{ font-family:'IBM Plex Mono',monospace; font-size:14px; text-align:right; }
-  .asset-row .chg{ font-family:'IBM Plex Mono',monospace; font-size:12px; text-align:right; }
+  .picker-select{ width:100%; background:var(--card); border:1px solid var(--card-border); border-radius:8px; padding:12px 14px; color:var(--text-primary); font-family:'IBM Plex Mono',monospace; font-size:14px; margin-bottom:16px; }
+  .picker-select:focus{ outline:1px solid var(--green-dim); }
+  .picker-box{ display:flex; align-items:center; justify-content:space-between; gap:14px; background:var(--bg-raised); border:1px solid var(--card-border); border-radius:10px; padding:18px; flex-wrap:wrap; }
+  .picker-box .picker-price{ font-family:'IBM Plex Mono',monospace; font-size:24px; font-weight:600; }
+  .picker-box .picker-chg{ font-family:'IBM Plex Mono',monospace; font-size:13px; margin-top:4px; }
+  .picker-box .picker-buy{ min-width:100px; }
 
   .holding-row{ display:grid; grid-template-columns: 1.2fr 0.8fr 1fr 1fr 1fr 90px; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid var(--card-border); font-family:'IBM Plex Mono',monospace; font-size:12.5px; }
   .holding-row:last-child{ border-bottom:none; }
@@ -76,8 +72,7 @@
     .balance-row{ grid-template-columns:1fr; }
     .balance-row.with-return{ grid-template-columns:1fr; }
     .setup-row{ grid-template-columns:1fr; }
-    .asset-row{ grid-template-columns: 1fr 90px 70px; }
-    .asset-row .chg{ display:none; }
+    .picker-box{ flex-direction:column; align-items:stretch; text-align:center; }
     .holding-row, .holding-head{ grid-template-columns: 1fr 1fr; }
     .holding-row span:nth-child(n+4), .holding-head span:nth-child(n+4){ display:none; }
     .crash-toast{ width:calc(100vw - 40px); right:-100vw; }
@@ -165,8 +160,14 @@
     <div class="row equal" id="tradingAreaEl">
       <div class="panel">
         <div class="panel-head"><h3>Stock browser</h3><span class="badge neutral" id="tickerCount">— assets</span></div>
-        <div class="search-row"><input type="text" id="searchBox" placeholder="Search RELIANCE, TCS, gold..."></div>
-        <div id="browserList"></div>
+        <select class="picker-select" id="assetSelect"></select>
+        <div class="picker-box">
+          <div>
+            <div class="picker-price" id="pickerPrice">—</div>
+            <div class="picker-chg" id="pickerChg">—</div>
+          </div>
+          <button class="btn-primary picker-buy" id="pickerBuyBtn">Buy</button>
+        </div>
       </div>
 
       <div class="panel">
@@ -562,26 +563,28 @@
       }
     }
 
-    function renderBrowser(filter) {
+    let assetSelectPopulated = false;
+    function populateAssetSelect() {
       const tickers = MMMarket.tickers;
       document.getElementById('tickerCount').textContent = tickers.length + ' assets';
-      const q = (filter || '').toLowerCase();
-      const list = document.getElementById('browserList');
-      const rows = tickers
-        .filter((t) => !q || t.toLowerCase().includes(q) || label(t).toLowerCase().includes(q))
-        .map((t) => {
-          const price = activePrice(t);
-          const prev = prevPrices[t];
-          const chgCls = prev != null ? (price >= prev ? 'pos' : 'neg') : '';
-          const disabled = price == null || (mode !== 'free' && round.ended);
-          return `<div class="asset-row" data-ticker="${t}">
-            <div class="name">${label(t)}<span class="sub">${t}</span></div>
-            <div class="price">${price == null ? 'not listed yet' : fmt(price)}</div>
-            <div class="chg ${chgCls}">${prev != null ? (price >= prev ? '▲' : '▼') : ''}</div>
-            <button class="btn-small" data-action="buy" data-ticker="${t}" ${disabled ? 'disabled' : ''}>Buy</button>
-          </div>`;
-        }).join('') || '<div class="empty-note">No matches.</div>';
-      list.innerHTML = rows;
+      document.getElementById('assetSelect').innerHTML =
+        tickers.map((t) => `<option value="${t}">${label(t)} (${t})</option>`).join('');
+      assetSelectPopulated = true;
+    }
+
+    function renderPicker() {
+      if (!assetSelectPopulated) populateAssetSelect();
+      const sel = document.getElementById('assetSelect');
+      const t = sel.value || (sel.options[0] && sel.options[0].value);
+      if (!t) return;
+      const price = activePrice(t);
+      const prev = prevPrices[t];
+      const chgCls = prev != null && price != null ? (price >= prev ? 'pos' : 'neg') : '';
+      document.getElementById('pickerPrice').textContent = price == null ? 'Not listed yet' : fmt(price);
+      const chgEl = document.getElementById('pickerChg');
+      chgEl.textContent = t + (prev != null && price != null ? ' ' + (price >= prev ? '▲' : '▼') : '');
+      chgEl.className = 'picker-chg ' + chgCls;
+      document.getElementById('pickerBuyBtn').disabled = price == null || (mode !== 'free' && round.ended);
     }
 
     function renderHoldings() {
@@ -650,7 +653,7 @@
       if (!MMMarket.loaded) return;
       if (mode !== 'free' && !round) return;
       renderClock();
-      renderBrowser(document.getElementById('searchBox').value);
+      renderPicker();
       renderHoldings();
       renderTx();
       renderBalances();
@@ -714,15 +717,15 @@
       }
     });
 
-    document.getElementById('browserList').addEventListener('click', (e) => {
-      const btn = e.target.closest('button[data-action="buy"]');
-      if (btn && !btn.disabled) openModal('buy', btn.dataset.ticker);
+    document.getElementById('assetSelect').addEventListener('change', renderPicker);
+    document.getElementById('pickerBuyBtn').addEventListener('click', () => {
+      const t = document.getElementById('assetSelect').value;
+      if (t) openModal('buy', t);
     });
     document.getElementById('holdingsList').addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-action="sell"]');
       if (btn && !btn.disabled) openModal('sell', btn.dataset.ticker);
     });
-    document.getElementById('searchBox').addEventListener('input', (e) => renderBrowser(e.target.value));
     document.getElementById('resetBtn').addEventListener('click', () => {
       if (confirm('Reset your account back to ₹1,00,000 and clear all holdings/history?')) {
         MMAccount.reset();
