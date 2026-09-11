@@ -269,26 +269,29 @@
     }
 
     const MODE_DESC = {
-      quick: '4-5 real historical events, randomly picked from the dataset -- the fastest way to see a real crash play out.',
-      standard: 'Every real event inside a randomly-chosen 15-year stretch of history (2000-2026), played back to back.',
-      full: 'All of the real events in the dataset, in chronological order, from 2000 through to the end of real history.',
+      quick: 'One real crash. Position yourself first, then live through it and see what happens.',
+      standard: '4-5 real crashes, randomly picked from the dataset, back to back on one portfolio.',
+      full: 'All 5 real crashes in the dataset, in chronological order, from 2000 through to the end of real history.',
     };
     const MODE_LABEL = { quick: 'Quick round', standard: 'Standard round', full: 'Full round' };
-    const EVENT_LEAD_DAYS = 20, EVENT_TAIL_DAYS = 10;
-    const TARGET_CHAPTER_MS = 20000;
+    const POSITION_LEAD_DAYS = 25;
+    const TARGET_POSITION_MS = 18000;
+    const TARGET_CRASH_MS = 7500;
 
     let mode = 'quick';
     let prevPrices = {};
     let modalMode = null, modalTicker = null;
 
     // --- Round state ----------------------------------------------------
-    // A round is a sequence of "chapters" -- each one a real historical event (plus a short
-    // lead-in/tail), played back to back on one continuous portfolio. Which events, and how
-    // many, depends on the mode (see buildChapters).
-    let round = null; // { mode, capital, chapters, chapterIdx, idx, account, valueHistory, chapterResults, timer, ended, awaitingContinue }
+    // A round is a sequence of "chapters" -- each one a real crash from MM.EVENTS. Each chapter
+    // has two timed phases: "positioning" (real dates ticking, no crash yet -- time to buy into
+    // a few companies) then "crash" (the real event window itself, paced faster). Which crashes,
+    // and how many chapters, depends on the mode (see buildChapters).
+    let round = null; // { mode, capital, chapters, chapterIdx, phase, idx, account, valueHistory, chapterResults, timer, ended, awaitingContinue }
 
     function currentChapter() { return round.chapters[round.chapterIdx]; }
-    function activeDate() { return currentChapter().dates[round.idx]; }
+    function activeDates() { return round.phase === 'positioning' ? currentChapter().positioningDates : currentChapter().crashDates; }
+    function activeDate() { return activeDates()[round.idx]; }
     function activePrice(t) { return MMMarket.getRealPriceOnDate(t, activeDate()); }
     function activeAllPrices() {
       const d = activeDate();
@@ -323,28 +326,26 @@
     }
 
     // --- Chapter selection, per mode -------------------------------------------------
+    // Chapters are built only from the real CRASH-badged events (5 of them) -- rallies aren't
+    // part of this loop. Quick = 1, Standard = 4-5 (random sample), Full = all 5, chronologically.
     function buildChapters(roundMode) {
-      const events = MM.EVENTS.slice();
+      const crashEvents = MM.EVENTS.filter((e) => e.badge === 'crash');
       let chosen;
       if (roundMode === 'quick') {
-        const shuffled = events.slice().sort(() => Math.random() - 0.5);
-        const n = Math.min(events.length, 4 + Math.floor(Math.random() * 2)); // 4 or 5
-        chosen = shuffled.slice(0, n).sort((a, b) => a.start.localeCompare(b.start));
+        chosen = [crashEvents[Math.floor(Math.random() * crashEvents.length)]];
       } else if (roundMode === 'standard') {
-        const spanYears = 15;
-        const firstYear = parseInt(MMMarket.firstRealDate.slice(0, 4), 10);
-        const lastYear = parseInt(MMMarket.lastRealDate.slice(0, 4), 10);
-        const maxStartYear = Math.max(firstYear, lastYear - spanYears);
-        const startYear = firstYear + Math.floor(Math.random() * (maxStartYear - firstYear + 1));
-        const winStart = startYear + '-01-01', winEnd = (startYear + spanYears) + '-01-01';
-        chosen = events.filter((e) => e.start < winEnd && e.end > winStart).sort((a, b) => a.start.localeCompare(b.start));
-        if (!chosen.length) chosen = events.slice().sort((a, b) => a.start.localeCompare(b.start)).slice(0, 3);
+        const shuffled = crashEvents.slice().sort(() => Math.random() - 0.5);
+        const n = Math.min(crashEvents.length, 4 + Math.floor(Math.random() * 2)); // 4 or 5
+        chosen = shuffled.slice(0, n).sort((a, b) => a.start.localeCompare(b.start));
       } else {
-        chosen = events.slice().sort((a, b) => a.start.localeCompare(b.start));
+        chosen = crashEvents.slice().sort((a, b) => a.start.localeCompare(b.start));
       }
-      return chosen
-        .map((ev) => ({ event: ev, dates: MMMarket.getRealDatesPadded(ev.start, ev.end, EVENT_LEAD_DAYS, EVENT_TAIL_DAYS) }))
-        .filter((c) => c.dates.length >= 2);
+      return chosen.map((ev) => {
+        const crashDates = MMMarket.getRealDatesBetween(ev.start, ev.end);
+        const positioningDates = MMMarket.getRealDatesPadded(ev.start, ev.start, POSITION_LEAD_DAYS, 0);
+        positioningDates.pop(); // last entry duplicates crashDates[0] (ev.start) -- drop it
+        return { event: ev, positioningDates, crashDates };
+      }).filter((c) => c.positioningDates.length >= 2 && c.crashDates.length >= 2);
     }
 
     // --- Mode switching ------------------------------------------------
@@ -384,35 +385,55 @@
       };
       showPlayChrome();
       beginChapterPlayback();
-      MMApp.toast('Round started -- ' + chapters.length + ' event' + (chapters.length === 1 ? '' : 's') + ' ahead');
+      MMApp.toast('Round started -- ' + chapters.length + ' real crash' + (chapters.length === 1 ? '' : 'es') + ' ahead');
+    }
+
+    function currentPortfolioValue() {
+      const prices = activeAllPrices();
+      return round.account.cash + MMAccount.holdingsWorth(round.account, prices);
     }
 
     function beginChapterPlayback() {
       const ch = currentChapter();
+      round.phase = 'positioning';
       round.idx = 0;
-      ch.tickMs = Math.max(15, Math.min(200, TARGET_CHAPTER_MS / ch.dates.length));
-      ch.notifiedEvent = false;
-      const prices0 = activeAllPrices();
-      ch.startValue = round.account.cash + MMAccount.holdingsWorth(round.account, prices0);
+      ch.positionTickMs = Math.max(60, Math.min(400, TARGET_POSITION_MS / ch.positioningDates.length));
       renderAll();
+      recordValueHistory();
+      resumeRoundTimer();
+    }
+
+    function enterCrashPhase() {
+      const ch = currentChapter();
+      round.phase = 'crash';
+      round.idx = 0;
+      ch.crashTickMs = Math.max(15, Math.min(200, TARGET_CRASH_MS / ch.crashDates.length));
+      ch.crashStartValue = currentPortfolioValue();
+      renderAll();
+      showCrashToast(ch.event);
       recordValueHistory();
       resumeRoundTimer();
     }
 
     function resumeRoundTimer() {
       if (!round || round.timer || round.ended || round.awaitingContinue) return;
-      round.timer = setInterval(roundTick, currentChapter().tickMs);
+      const ch = currentChapter();
+      const ms = round.phase === 'positioning' ? ch.positionTickMs : ch.crashTickMs;
+      round.timer = setInterval(roundTick, ms);
     }
     function pauseRoundTimer() {
       if (round && round.timer) { clearInterval(round.timer); round.timer = null; }
     }
     function roundTick() {
       if (!round || round.ended || round.awaitingContinue) return;
-      const ch = currentChapter();
-      if (round.idx >= ch.dates.length - 1) { finishChapter(); return; }
+      const dates = activeDates();
+      if (round.idx >= dates.length - 1) {
+        pauseRoundTimer();
+        if (round.phase === 'positioning') enterCrashPhase(); else finishChapter();
+        return;
+      }
       round.idx++;
       renderAll();
-      maybeNotifyEvent();
       recordValueHistory();
     }
     function recordValueHistory() {
@@ -420,24 +441,16 @@
       const stockVal = MMAccount.holdingsWorth(round.account, prices);
       round.valueHistory.push({ date: activeDate(), total_value: round.account.cash + stockVal });
     }
-    function maybeNotifyEvent() {
-      const ch = currentChapter();
-      if (!ch.notifiedEvent && activeDate() >= ch.event.start) {
-        ch.notifiedEvent = true;
-        showCrashToast(ch.event);
-      }
-    }
 
     function finishChapter() {
       pauseRoundTimer();
       const ch = currentChapter();
-      const prices = activeAllPrices();
-      const endValue = round.account.cash + MMAccount.holdingsWorth(round.account, prices);
-      const returnPct = (endValue / ch.startValue - 1) * 100;
-      const benchStart = MM.getIndexValue(ch.dates[0]);
-      const benchEnd = MM.getIndexValue(ch.dates[ch.dates.length - 1]);
+      const endValue = currentPortfolioValue();
+      const returnPct = (endValue / ch.crashStartValue - 1) * 100;
+      const benchStart = MM.getIndexValue(ch.crashDates[0]);
+      const benchEnd = MM.getIndexValue(ch.crashDates[ch.crashDates.length - 1]);
       const benchmarkPct = (benchEnd / benchStart - 1) * 100;
-      const result = { event: ch.event, startValue: ch.startValue, endValue, returnPct, benchmarkPct };
+      const result = { event: ch.event, startValue: ch.crashStartValue, endValue, returnPct, benchmarkPct };
       round.chapterResults.push(result);
       round.awaitingContinue = true;
       const isLast = round.chapterIdx === round.chapters.length - 1;
@@ -486,7 +499,7 @@
       const cls = result.returnPct >= 0 ? 'pos' : 'neg';
       const vsCls = (result.returnPct - result.benchmarkPct) >= 0 ? 'pos' : 'neg';
       document.getElementById('chapterMetrics').innerHTML = `
-        <div class="metric-row"><span>Your return, this chapter</span><span class="${cls}">${MMApp.formatPct(result.returnPct)}</span></div>
+        <div class="metric-row"><span>Your return, during the crash</span><span class="${cls}">${MMApp.formatPct(result.returnPct)}</span></div>
         <div class="metric-row"><span>Real SENSEX move, same window</span><span>${MMApp.formatPct(result.benchmarkPct)}</span></div>
         <div class="metric-row"><span>You vs. the index</span><span class="${vsCls}">${MMApp.formatPct(result.returnPct - result.benchmarkPct)}</span></div>`;
       document.getElementById('chapterMl').innerHTML = mlTableHtml(ev.id);
@@ -498,7 +511,7 @@
     function showResults() {
       const metrics = MMPortfolio.computeMetrics(round.valueHistory);
       const first = round.chapters[0], last = round.chapters[round.chapters.length - 1];
-      const startDate = first.dates[0], endDate = last.dates[last.dates.length - 1];
+      const startDate = first.positioningDates[0], endDate = last.crashDates[last.crashDates.length - 1];
       const benchmarkPct = (MM.getIndexValue(endDate) / MM.getIndexValue(startDate) - 1) * 100;
 
       document.getElementById('resultsTitle').textContent = MODE_LABEL[round.mode] + ' complete';
@@ -526,11 +539,23 @@
 
       const saveRow = document.getElementById('resultsSaveRow');
       const user = window.MMAuth && MMAuth.getCurrentUser();
+      const fullCta = round.mode !== 'full'
+        ? `<button class="btn-secondary" id="playFullBtn" style="width:100%; margin-top:10px;">Play a Full Round instead →</button>` : '';
       if (user) {
-        saveRow.innerHTML = `<button class="btn-primary" id="saveLbBtn" style="width:100%;">Save to leaderboard</button><div class="err" id="saveLbErr"></div>`;
+        saveRow.innerHTML = `<button class="btn-primary" id="saveLbBtn" style="width:100%;">Save to leaderboard</button><div class="err" id="saveLbErr"></div>${fullCta}`;
         document.getElementById('saveLbBtn').addEventListener('click', () => saveToLeaderboard(metrics, benchmarkPct, startDate, endDate));
       } else {
-        saveRow.innerHTML = `<p class="note">Sign in to save this run to the leaderboard.</p><a class="btn-secondary" href="login.html?return=portfolio.html" style="display:inline-block;">Sign in</a>`;
+        saveRow.innerHTML = `<p class="note">Sign in to save this run to the leaderboard.</p><a class="btn-secondary" href="login.html?return=portfolio.html" style="display:inline-block;">Sign in</a>${fullCta}`;
+      }
+      if (round.mode !== 'full') {
+        document.getElementById('playFullBtn').addEventListener('click', () => {
+          const capitalUsed = round.capital;
+          document.getElementById('resultsBackdrop').classList.remove('show');
+          mode = 'full';
+          document.querySelectorAll('.mode-tab').forEach((b) => b.classList.toggle('active', b.dataset.mode === 'full'));
+          document.getElementById('modeDesc').textContent = MODE_DESC.full;
+          startRound(capitalUsed, 'full');
+        });
       }
 
       document.getElementById('resultsBackdrop').classList.add('show');
@@ -584,10 +609,12 @@
     function renderClock() {
       if (!round) return;
       const ch = currentChapter();
+      const dates = activeDates();
+      const phaseLabel = round.phase === 'positioning' ? 'Positioning before' : 'Crash:';
       document.getElementById('clockDate').textContent = activeDate();
       document.getElementById('clockPhase').textContent =
-        `Chapter ${round.chapterIdx + 1} of ${round.chapters.length}: ${ch.event.title} · Day ${round.idx + 1} of ${ch.dates.length}`;
-      document.getElementById('clockFill').style.width = (100 * round.idx / (ch.dates.length - 1)).toFixed(2) + '%';
+        `Chapter ${round.chapterIdx + 1} of ${round.chapters.length} · ${phaseLabel} ${ch.event.title} · Day ${round.idx + 1} of ${dates.length}`;
+      document.getElementById('clockFill').style.width = (100 * round.idx / (dates.length - 1)).toFixed(2) + '%';
     }
 
     let assetSelectPopulated = false;
