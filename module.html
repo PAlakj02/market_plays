@@ -839,6 +839,9 @@
         }, { threshold: 0.2 });
         observer.observe(document.getElementById('causesPanelWrap'));
       }
+    }).catch((e) => {
+      console.error('MarketMinds: failed to load market data', e);
+      MMApp.toast('Could not load market data -- try refreshing the page.', 6000);
     });
   })();
   </script>

@@ -1,20 +1,27 @@
 # This is a static HTML/CSS/JS site -- everything below is the Python ML
 # pipeline (offline model training/research), not part of the deployed site.
 # Excluding it stops Vercel from mis-detecting this as a Python project.
-notebooks/
-src/
-scripts/
-models/
-data/
-results/
-public/
-docs/
-app/
-.venv/
+#
+# All paths below are anchored to the repo root with a leading slash. Without
+# that, a pattern like "data/" (no leading slash) matches ANY folder named
+# "data" at any depth -- including assets/data/, which is where the live
+# site's real_prices.json actually lives. That exact bug shipped once already:
+# it silently broke every page (blank balances/clock/stock list) because the
+# frontend's price fetch 404'd with no visible error.
+/notebooks/
+/src/
+/scripts/
+/models/
+/data/
+/results/
+/public/
+/docs/
+/app/
+/.venv/
 *.ipynb
-requirements.txt
-kaggle.json
-MarketMinds_Proposal (2).docx.md
-marketminds_design_mockup.html
-image.png
-image11.jpeg
+/requirements.txt
+/kaggle.json
+/MarketMinds_Proposal (2).docx.md
+/marketminds_design_mockup.html
+/image.png
+/image11.jpeg

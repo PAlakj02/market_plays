@@ -734,6 +734,9 @@
     Promise.all([MMMarket.load(), MMAccount.ready]).then(() => {
       renderAll();
       setInterval(() => { if (mode === 'free') renderAll(); }, 6000);
+    }).catch((e) => {
+      console.error('MarketMinds: failed to load market data', e);
+      MMApp.toast('Could not load market data -- try refreshing the page.', 6000);
     });
   })();
   </script>
