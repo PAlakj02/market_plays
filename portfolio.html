@@ -688,6 +688,7 @@
 
     // --- Buy/sell modal -------------------------------------------------
     function openModal(m, ticker) {
+      pauseRoundTimer(); // don't let the date/price move while a decision is open
       modalMode = m; modalTicker = ticker;
       document.getElementById('modalTitle').textContent = (m === 'buy' ? 'Buy ' : 'Sell ') + label(ticker);
       document.getElementById('modalSub').textContent = ticker;
@@ -700,6 +701,7 @@
     function closeModal() {
       document.getElementById('modalBackdrop').classList.remove('show');
       modalMode = null; modalTicker = null;
+      resumeRoundTimer();
     }
     function updateModalSummary() {
       const qty = Math.max(0, parseFloat(document.getElementById('modalQty').value) || 0);
